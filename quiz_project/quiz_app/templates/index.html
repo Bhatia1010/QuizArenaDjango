@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block style %}
+<style>
+    body {
+        /* background-image: url({% static 'images/hero-bg.jpg' %});
+        background-position: center;
+        background-repeat: no-repeat; */
+        height: 100vh;
+    }
+
+    .hero {
+        text-align: center;
+        padding: 50px 20px;
+        background: white;
+        color: black;
+        border-radius: 10px;
+        max-width: 600px;
+        margin: 40px auto;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .hero h1 {
+        color: black;
+        font-size: 2.5em;
+        margin-bottom: 10px;
+    }
+
+    .hero p {
+        font-size: 18px;
+        margin-bottom: 20px;
+    }
+
+    .cta-button {
+        background: #613e7e;
+        color: white;
+        padding: 12px 24px;
+        font-size: 18px;
+        font-weight: bold;
+        text-decoration: none;
+        border-radius: 5px;
+        transition: background 0.3s, color 0.3s;
+    }
+
+    .cta-button:hover {
+        background: #ff6600;
+        color: white;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="hero">
+    <h1>Create & Manage Quizzes</h1>
+    <p>Find technology or people for digital quizzes...</p>
+    <a href="{% url 'registerFunction' %}" class="cta-button">Get Started</a>
+</section>
+{% endblock %}

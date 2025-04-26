@@ -1,0 +1,184 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block style %}
+<style>
+    .learning-hub-container {
+        max-width: 1200px;
+        margin: 100px auto 40px;
+        padding: 0 20px;
+    }
+
+    .hub-header {
+        text-align: center;
+        margin-bottom: 50px;
+        padding: 40px;
+        background: linear-gradient(135deg, #6b46c1 0%, #4299e1 100%);
+        border-radius: 15px;
+        color: white;
+    }
+
+    .hub-header h1 {
+        font-size: 2.5rem;
+        margin-bottom: 15px;
+    }
+
+    .hub-header p {
+        font-size: 1.2rem;
+        opacity: 0.9;
+    }
+
+    .topics-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+        gap: 30px;
+        padding: 20px;
+    }
+
+    .topic-card {
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .topic-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    .topic-icon {
+        height: 100px;
+        background-size: contain;
+        background-position: center;
+        background-repeat: no-repeat;
+        border-bottom: 3px solid #6b46c1;
+        margin: 10px auto;
+        max-width: 200px;
+        padding: 10px;
+    }
+
+    .topic-content {
+        padding: 25px;
+    }
+
+    .topic-content h3 {
+        color: #2d3748;
+        font-size: 1.5rem;
+        margin-bottom: 10px;
+        font-weight: 600;
+    }
+
+    .topic-content p {
+        color: #4a5568;
+        margin-bottom: 20px;
+        line-height: 1.6;
+        font-size: 1rem;
+    }
+
+    .resource-count {
+        display: inline-block;
+        padding: 5px 12px;
+        background: #e9d8fd;
+        color: #553c9a;
+        border-radius: 15px;
+        font-size: 0.9rem;
+        margin-bottom: 15px;
+        font-weight: 500;
+    }
+
+    .topic-btn {
+        display: inline-block;
+        padding: 10px 20px;
+        background: #6b46c1;
+        color: white;
+        text-decoration: none;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+        font-weight: 500;
+    }
+
+    .topic-btn:hover {
+        background: #553c9a;
+        transform: translateY(-2px);
+    }
+
+    /* Topic-specific background styles */
+    .python-bg {
+        background-image: url('https://www.python.org/static/community_logos/python-logo-generic.svg');
+        background-color: #f8f9fa;
+    }
+
+    .cpp-bg {
+        background-image: url('https://isocpp.org/assets/images/cpp_logo.png');
+        background-color: #f8f9fa;
+    }
+
+    /* Updated web development icon */
+    .web-bg {
+        background-image: url('https://cdn.jsdelivr.net/gh/devicons/devicon/icons/html5/html5-original-wordmark.svg'),
+                         url('https://cdn.jsdelivr.net/gh/devicons/devicon/icons/css3/css3-plain-wordmark.svg'),
+                         url('https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg');
+        background-position: left center, center center, right center;
+        background-size: 33% auto;
+        background-repeat: no-repeat;
+        background-color: #f8f9fa;
+    }
+
+    .django-bg {
+        background-image: url('https://static.djangoproject.com/img/logos/django-logo-positive.png');
+        background-color: #f8f9fa;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+        .topics-grid {
+            grid-template-columns: 1fr;
+            padding: 10px;
+        }
+
+        .hub-header {
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+
+        .hub-header h1 {
+            font-size: 2rem;
+        }
+
+        .topic-card {
+            max-width: 100%;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="learning-hub-container">
+    <div class="hub-header">
+        <h1>Learning Hub</h1>
+        <p>Explore our comprehensive learning materials and enhance your programming skills</p>
+    </div>
+
+    <div class="topics-grid">
+        {% for topic in topics %}
+        <div class="topic-card">
+            <div class="topic-icon 
+                {% if 'Python' in topic.title %}python-bg
+                {% elif 'C++' in topic.title %}cpp-bg
+                {% elif 'Web' in topic.title %}web-bg
+                {% elif 'Django' in topic.title %}django-bg
+                {% endif %}">
+            </div>
+            <div class="topic-content">
+                <span class="resource-count">{{ topic.resources.count }} Resources</span>
+                <h3>{{ topic.title }}</h3>
+                <p>{{ topic.description }}</p>
+                <a href="{% url 'learning_hub:topic_detail' topic.id %}" class="topic-btn">Start Learning</a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

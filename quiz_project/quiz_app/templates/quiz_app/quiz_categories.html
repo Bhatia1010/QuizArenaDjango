@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block style %}
+<style>
+    .categories-container {
+        max-width: 1200px;
+        margin: 100px auto 40px;
+        padding: 0 20px;
+    }
+
+    .categories-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 30px;
+        margin-top: 40px;
+    }
+
+    .category-card {
+        background: white;
+        padding: 30px;
+        border-radius: 15px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+    }
+
+    .category-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .category-card h3 {
+        color: #6b46c1;
+        margin-bottom: 15px;
+        font-size: 1.5rem;
+    }
+
+    .category-card p {
+        color: #666;
+        line-height: 1.6;
+    }
+
+    .page-header {
+        text-align: center;
+        margin-bottom: 40px;
+    }
+
+    .page-header h1 {
+        font-size: 2.5rem;
+        color: #2d3748;
+        margin-bottom: 20px;
+    }
+
+    .page-header p {
+        color: #666;
+        font-size: 1.2rem;
+        max-width: 600px;
+        margin: 0 auto;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="categories-container">
+    <div class="page-header">
+        <h1>Quiz Categories</h1>
+        <p>Explore our wide range of quiz categories and test your knowledge in different subjects.</p>
+    </div>
+
+    <div class="categories-grid">
+        {% for category in categories %}
+        <div class="category-card">
+            <h3>{{ category.category }}</h3>
+            <p>Test your knowledge in this category with our carefully crafted quizzes.</p>
+            <a href="{% url 'category_quizzes' category.category %}" class="btn btn-primary">View Quizzes</a>
+        </div>
+        {% empty %}
+        <div class="no-categories">
+            <p>No categories available yet.</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %} 

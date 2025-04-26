@@ -1,0 +1,305 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block style %}
+<style>
+    .topic-container {
+        max-width: 1000px;
+        margin: 100px auto 40px;
+        padding: 0 20px;
+    }
+
+    .topic-header {
+        background: #6b46c1;
+        color: white;
+        padding: 40px;
+        border-radius: 15px;
+        margin-bottom: 30px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .topic-header h1 {
+        font-size: 2.5rem;
+        margin-bottom: 15px;
+    }
+
+    .topic-header p {
+        font-size: 1.1rem;
+        opacity: 0.9;
+    }
+
+    .topic-notes {
+        background: white;
+        padding: 30px;
+        border-radius: 15px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        margin-bottom: 30px;
+    }
+
+    .topic-notes h2 {
+        color: #2d3748;
+        font-size: 1.8rem;
+        margin-bottom: 20px;
+        padding-bottom: 10px;
+        border-bottom: 2px solid #e2e8f0;
+    }
+
+    .notes-section {
+        margin-bottom: 25px;
+    }
+
+    .notes-section h3 {
+        color: #4a5568;
+        font-size: 1.3rem;
+        margin-bottom: 10px;
+    }
+
+    .notes-section ul {
+        list-style-type: none;
+        padding-left: 0;
+    }
+
+    .notes-section li {
+        padding: 8px 0;
+        border-bottom: 1px solid #edf2f7;
+        color: #4a5568;
+    }
+
+    .notes-section li:last-child {
+        border-bottom: none;
+    }
+
+    .resources-list {
+        display: grid;
+        gap: 20px;
+    }
+
+    .resource-card {
+        background: white;
+        padding: 25px;
+        border-radius: 10px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+    }
+
+    .resource-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    }
+
+    .resource-type {
+        display: inline-block;
+        padding: 5px 12px;
+        background: #e9d8fd;
+        color: #553c9a;
+        border-radius: 15px;
+        font-size: 0.9rem;
+        margin-bottom: 10px;
+    }
+
+    .resource-card h3 {
+        color: #2d3748;
+        margin-bottom: 10px;
+        font-size: 1.3rem;
+    }
+
+    .resource-card p {
+        color: #4a5568;
+        margin-bottom: 15px;
+    }
+
+    .resource-link {
+        display: inline-block;
+        padding: 8px 16px;
+        background: #6b46c1;
+        color: white;
+        text-decoration: none;
+        border-radius: 5px;
+        transition: all 0.3s ease;
+    }
+
+    .resource-link:hover {
+        background: #553c9a;
+    }
+
+    .action-buttons {
+        display: flex;
+        justify-content: flex-end;
+        margin-bottom: 20px;
+        gap: 15px;
+    }
+
+    .action-btn {
+        display: inline-block;
+        padding: 12px 24px;
+        background: #6b46c1;
+        color: white;
+        text-decoration: none;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+        font-weight: 500;
+    }
+
+    .action-btn:hover {
+        background: #553c9a;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .action-btn i {
+        margin-right: 8px;
+    }
+
+    @media (max-width: 768px) {
+        .topic-container {
+            padding: 0 15px;
+        }
+
+        .topic-header {
+            padding: 30px;
+        }
+
+        .topic-notes {
+            padding: 20px;
+        }
+
+        .notes-section h3 {
+            font-size: 1.2rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="topic-container">
+    <div class="topic-header">
+        <h1>{{ topic.title }}</h1>
+        <p>{{ topic.description }}</p>
+    </div>
+
+    {% if user.is_authenticated and user.is_staff %}
+    <div class="action-buttons">
+        <a href="{% url 'learning_hub:submit_resource' topic.id %}" class="action-btn">
+            <i class="fas fa-plus"></i> Submit Resource
+        </a>
+    </div>
+    {% endif %}
+
+    <div class="topic-notes">
+        <h2>Topic Overview</h2>
+        {% if 'Python' in topic.title %}
+        <div class="notes-section">
+            <h3>Key Concepts</h3>
+            <ul>
+                <li>Variables and Data Types: Understanding Python's dynamic typing system</li>
+                <li>Control Flow: If statements, loops, and exception handling</li>
+                <li>Functions: Parameters, return values, and scope</li>
+                <li>Object-Oriented Programming: Classes, inheritance, and polymorphism</li>
+                <li>File Handling: Reading and writing files, working with different formats</li>
+            </ul>
+        </div>
+        <div class="notes-section">
+            <h3>Advanced Topics</h3>
+            <ul>
+                <li>Decorators: Function and class decorators, their applications</li>
+                <li>Generators: Creating and using generator functions</li>
+                <li>Context Managers: Working with resources using 'with' statements</li>
+                <li>Metaclasses: Understanding Python's class creation process</li>
+                <li>Async Programming: Coroutines, async/await syntax</li>
+            </ul>
+        </div>
+        <div class="notes-section">
+            <h3>Best Practices</h3>
+            <ul>
+                <li>PEP 8: Python's style guide and code formatting</li>
+                <li>Type Hints: Adding type information to your code</li>
+                <li>Virtual Environments: Managing project dependencies</li>
+                <li>Testing: Unit tests, integration tests, and test-driven development</li>
+                <li>Documentation: Writing clear docstrings and documentation</li>
+            </ul>
+        </div>
+        {% elif 'C++' in topic.title %}
+        <div class="notes-section">
+            <h3>Core Concepts</h3>
+            <ul>
+                <li>Pointers and References: Memory management fundamentals</li>
+                <li>Classes and Objects: Object-oriented programming in C++</li>
+                <li>Templates: Generic programming and template metaprogramming</li>
+                <li>STL: Standard Template Library components and usage</li>
+                <li>Exception Handling: Try-catch blocks and error management</li>
+            </ul>
+        </div>
+        <div class="notes-section">
+            <h3>Advanced Features</h3>
+            <ul>
+                <li>Smart Pointers: RAII and memory management</li>
+                <li>Move Semantics: Rvalue references and move constructors</li>
+                <li>Lambda Expressions: Anonymous functions and closures</li>
+                <li>Concurrency: Threads, mutexes, and async programming</li>
+                <li>Modern C++: C++11/14/17/20 features and best practices</li>
+            </ul>
+        </div>
+        {% elif 'Web' in topic.title %}
+        <div class="notes-section">
+            <h3>Frontend Development</h3>
+            <ul>
+                <li>HTML5: Semantic markup and modern features</li>
+                <li>CSS3: Flexbox, Grid, and responsive design</li>
+                <li>JavaScript: ES6+ features and modern practices</li>
+                <li>React/Vue/Angular: Popular frontend frameworks</li>
+                <li>Web Performance: Optimization techniques and tools</li>
+            </ul>
+        </div>
+        <div class="notes-section">
+            <h3>Backend Development</h3>
+            <ul>
+                <li>Node.js: Server-side JavaScript runtime</li>
+                <li>REST APIs: Design principles and implementation</li>
+                <li>GraphQL: Modern API query language</li>
+                <li>WebSockets: Real-time communication</li>
+                <li>Database Integration: SQL and NoSQL databases</li>
+            </ul>
+        </div>
+        {% elif 'Django' in topic.title %}
+        <div class="notes-section">
+            <h3>Core Concepts</h3>
+            <ul>
+                <li>Models: Database schema and relationships</li>
+                <li>Views: Function-based and class-based views</li>
+                <li>Templates: Template language and inheritance</li>
+                <li>Forms: Form handling and validation</li>
+                <li>Admin Interface: Customizing the admin panel</li>
+            </ul>
+        </div>
+        <div class="notes-section">
+            <h3>Advanced Features</h3>
+            <ul>
+                <li>Class-Based Views: Generic views and mixins</li>
+                <li>Middleware: Request/response processing</li>
+                <li>Signals: Event-driven programming</li>
+                <li>Caching: Performance optimization</li>
+                <li>Testing: Test cases and test client</li>
+            </ul>
+        </div>
+        {% endif %}
+    </div>
+
+    <div class="resources-list">
+        {% for resource in resources %}
+        <div class="resource-card">
+            <span class="resource-type">{{ resource.get_resource_type_display }}</span>
+            <h3>{{ resource.title }}</h3>
+            <p>{{ resource.description }}</p>
+            <div class="resource-actions">
+                <a href="{% url 'learning_hub:resource_detail' topic.id resource.id %}" class="resource-link">View Resource</a>
+                {% if user.is_authenticated and user.is_staff %} <!-This ensures that only staff/admin users see:- --!>
+                <a href="{% url 'learning_hub:edit_resource' topic.id resource.id %}" class="resource-link edit-link">Edit</a>
+                {% endif %}
+            </div>
+        </div>
+        {% empty %}
+        <p>No resources available for this topic yet.</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

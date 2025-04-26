@@ -1,0 +1,156 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block style %}
+<style>
+    .stats-container {
+        max-width: 1200px;
+        margin: 100px auto 40px;
+        padding: 0 20px;
+    }
+
+    .stats-header {
+        text-align: center;
+        margin-bottom: 40px;
+    }
+
+    .stats-header h1 {
+        font-size: 2.5rem;
+        color: #2d3748;
+        margin-bottom: 20px;
+    }
+
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 30px;
+        margin-bottom: 40px;
+    }
+
+    .stat-card {
+        background: white;
+        padding: 30px;
+        border-radius: 15px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        text-align: center;
+    }
+
+    .stat-card h3 {
+        color: #6b46c1;
+        margin-bottom: 15px;
+        font-size: 1.5rem;
+    }
+
+    .stat-value {
+        font-size: 3rem;
+        font-weight: bold;
+        color: #2d3748;
+        margin-bottom: 10px;
+    }
+
+    .recent-quizzes {
+        background: white;
+        padding: 30px;
+        border-radius: 15px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .recent-quizzes h2 {
+        color: #2d3748;
+        margin-bottom: 20px;
+        font-size: 1.8rem;
+    }
+
+    .quiz-list {
+        list-style: none;
+        padding: 0;
+    }
+
+    .quiz-item {
+        padding: 15px;
+        border-bottom: 1px solid #eee;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .quiz-item:last-child {
+        border-bottom: none;
+    }
+
+    .quiz-info h4 {
+        color: #2d3748;
+        margin-bottom: 5px;
+    }
+
+    .quiz-score {
+        font-weight: bold;
+        color: #6b46c1;
+    }
+
+    .no-stats {
+        text-align: center;
+        padding: 40px;
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .no-stats p {
+        color: #666;
+        font-size: 1.2rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="stats-container">
+    <div class="stats-header">
+        <h1>Your Statistics</h1>
+        <p>Track your progress and performance across all quizzes</p>
+    </div>
+
+    {% if user.is_authenticated %}
+        <div class="stats-grid">
+            <div class="stat-card">
+                <h3>Total Quizzes</h3>
+                <div class="stat-value">{{ total_quizzes }}</div>
+                <p>Quizzes completed</p>
+            </div>
+            <div class="stat-card">
+                <h3>Average Score</h3>
+                <div class="stat-value">{{ average_score|floatformat:1 }}%</div>
+                <p>Across all quizzes</p>
+            </div>
+            <div class="stat-card">
+                <h3>Highest Score</h3>
+                <div class="stat-value">{{ highest_score|floatformat:1 }}%</div>
+                <p>Best performance</p>
+            </div>
+        </div>
+
+        <div class="recent-quizzes">
+            <h2>Recent Quiz Results</h2>
+            <ul class="quiz-list">
+                {% for result in recent_results %}
+                <li class="quiz-item">
+                    <div class="quiz-info">
+                        <h4>{{ result.quiz.title }}</h4>
+                        <p>{{ result.date_taken|date:"F j, Y" }}</p>
+                    </div>
+                    <div class="quiz-score">{{ result.score|floatformat:1 }}%</div>
+                </li>
+                {% empty %}
+                <li class="quiz-item">
+                    <p>No quiz results yet.</p>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% else %}
+        <div class="no-stats">
+            <p>Please <a href="{% url 'login' %}">log in</a> to view your statistics.</p>
+        </div>
+    {% endif %}
+</div>
+{% endblock %} 

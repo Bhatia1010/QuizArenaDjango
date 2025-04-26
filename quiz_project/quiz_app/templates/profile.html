@@ -1,0 +1,662 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block style %}
+<style>
+    :root {
+        --primary-color: #6b46c1;
+        --primary-dark: #553c9a;
+        --primary-light: #805ad5;
+        --secondary-color: #4299e1;
+        --success-color: #48bb78;
+        --warning-color: #ed8936;
+        --danger-color: #e53e3e;
+        --text-dark: #2d3748;
+        --text-light: #b6bcc5;
+        --background-light: #f8f9fa;
+        --white: #ffffff;
+        --shadow-sm: 0 4px 6px rgba(0, 0, 0, 0.1);
+        --shadow-md: 0 10px 15px rgba(0, 0, 0, 0.1);
+        --shadow-lg: 0 20px 25px rgba(0, 0, 0, 0.1);
+        --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        --card-bg: #ffffff;
+        --border-radius: 12px;
+        --card-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        --text-primary: #333333;
+        --text-secondary: #666666;
+        --border-color: #e0e0e0;
+        --gradient-primary: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%);
+    }
+
+    .dashboard-container {
+        max-width: 1600px;
+        margin: 100px auto 40px;
+        padding: 0 30px;
+        width: 95%;
+        animation: fadeIn 0.5s ease-out;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Welcome Section */
+    .welcome-section {
+        width: 100%;
+        background: var(--gradient-primary);
+        padding: 50px 60px;
+        border-radius: var(--border-radius);
+        color: rgba(255, 255, 255, 0.95);
+        margin-bottom: 40px;
+        position: relative;
+        overflow: hidden;
+        box-shadow: var(--shadow-lg);
+        transition: var(--transition);
+    }
+
+    .welcome-section:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 30px rgba(107, 70, 193, 0.2);
+    }
+
+    .welcome-content h1 {
+        font-size: 2.8rem;
+        margin-bottom: 15px;
+        font-weight: 800;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+        color: #ffffff;
+        letter-spacing: 0.5px;
+    }
+
+    .welcome-content p {
+        font-size: 1.3rem;
+        opacity: 0.92;
+        line-height: 1.6;
+        color: #E9E3FF;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Quick Stats */
+    .quick-stats {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 30px;
+        margin-bottom: 40px;
+    }
+
+    .stat-card {
+        background: var(--white);
+        padding: 30px;
+        border-radius: 15px;
+        box-shadow: var(--shadow-md);
+        transition: var(--transition);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .stat-card:hover {
+        transform: translateY(-5px);
+        box-shadow: var(--shadow-lg);
+    }
+
+    .stat-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 4px;
+        height: 100%;
+        background: linear-gradient(to bottom, var(--primary-color), var(--primary-light));
+    }
+
+    .stat-card h3 {
+        font-size: 2.5rem;
+        color: var(--text-dark);
+        margin-bottom: 10px;
+        font-weight: 700;
+    }
+
+    .stat-card p {
+        color: var(--text-light);
+        font-size: 1.1rem;
+    }
+
+    /* Profile Section */
+    .profile-section {
+        width: 100%;
+        background: var(--white);
+        border-radius: var(--border-radius);
+        box-shadow: var(--shadow-lg);
+        overflow: hidden;
+        margin-bottom: 40px;
+        transition: var(--transition);
+    }
+
+    .profile-section:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 20px 40px rgba(107, 70, 193, 0.15);
+    }
+
+    .profile-header {
+        width: 100%;
+        background: var(--gradient-primary);
+        padding: 60px 60px;
+        color: rgba(255, 255, 255, 0.95);
+        position: relative;
+        display: flex;
+        align-items: center;
+        gap: 60px;
+    }
+
+    .avatar {
+        position: relative;
+        z-index: 1;
+    }
+
+    .avatar img {
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        border: 4px solid var(--white);
+        box-shadow: var(--shadow-md);
+        transition: var(--transition);
+        object-fit: cover;
+        background: var(--background-light);
+    }
+
+    .avatar img:hover {
+        transform: scale(1.05);
+        box-shadow: var(--shadow-lg);
+    }
+
+    .user-info {
+        position: relative;
+        z-index: 1;
+        flex: 1;
+    }
+
+    .user-info h1 {
+        font-size: 2.5rem;
+        margin-bottom: 10px;
+        font-weight: 700;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+        color: #ffffff;
+        letter-spacing: 0.5px;
+    }
+
+    .user-info p {
+        font-size: 1.1rem;
+        opacity: 0.92;
+        margin-bottom: 8px;
+        color: #E9E3FF;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    }
+
+    .edit-profile {
+        background: rgba(255, 255, 255, 0.12);
+        border: 2px solid rgba(255, 255, 255, 0.9);
+        color: #ffffff;
+        padding: 12px 30px;
+        border-radius: 30px;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: var(--transition);
+        margin-top: 15px;
+        backdrop-filter: blur(5px);
+        letter-spacing: 0.5px;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    }
+
+    .edit-profile:hover {
+        background: rgba(255, 255, 255, 0.18);
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        border-color: #ffffff;
+    }
+
+    /* Profile Details */
+    .profile-details {
+        padding: 40px 60px;
+        background: var(--white);
+    }
+
+    .detail-group {
+        margin-bottom: 35px;
+        animation: slideUp 0.5s ease-out forwards;
+        opacity: 0;
+    }
+
+    .detail-group:nth-child(2) {
+        animation-delay: 0.1s;
+    }
+
+    @keyframes slideUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .detail-group h3 {
+        font-size: 1.5rem;
+        color: var(--text-dark);
+        margin-bottom: 20px;
+        font-weight: 700;
+        position: relative;
+        padding-bottom: 10px;
+    }
+
+    .detail-group h3::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 50px;
+        height: 3px;
+        background: var(--gradient-primary);
+        border-radius: 3px;
+    }
+
+    .detail-item {
+        display: flex;
+        justify-content: space-between;
+        padding: 15px 30px;
+        border-bottom: 1px solid var(--border-color);
+        transition: var(--transition);
+        background: var(--white);
+    }
+
+    .detail-item:hover {
+        background: var(--background-light);
+        transform: translateX(10px);
+        border-radius: 8px;
+        box-shadow: var(--shadow-sm);
+    }
+
+    .detail-item:last-child {
+        border-bottom: none;
+    }
+
+    .detail-label {
+        color: var(--text-light);
+        font-weight: 500;
+        font-size: 1.1rem;
+    }
+
+    .detail-value {
+        color: var(--text-dark);
+        font-weight: 600;
+        font-size: 1.1rem;
+        background: var(--gradient-primary);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 1200px) {
+        .dashboard-container {
+            width: 98%;
+            padding: 0 20px;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .dashboard-container {
+            padding: 0 15px;
+        }
+
+        .welcome-section,
+        .profile-header,
+        .profile-details {
+            padding: 30px;
+        }
+
+        .profile-header {
+            flex-direction: column;
+            text-align: center;
+            gap: 25px;
+        }
+
+        .user-info {
+            text-align: center;
+        }
+
+        .detail-item {
+            padding: 12px 20px;
+        }
+
+        .modal-content {
+            padding: 30px;
+            width: 95%;
+            margin: 15% auto;
+        }
+
+        .welcome-content h1,
+        .user-info h1 {
+            font-size: 2rem;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .welcome-section {
+            padding: 25px;
+        }
+
+        .profile-details {
+            padding: 25px;
+        }
+
+        .detail-group h3 {
+            font-size: 1.3rem;
+        }
+
+        .detail-label,
+        .detail-value {
+            font-size: 1rem;
+        }
+
+        .modal-content {
+            padding: 25px;
+        }
+    }
+
+    /* Modal Styles */
+    .modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 1000;
+        backdrop-filter: blur(5px);
+    }
+
+    .modal-content {
+        position: relative;
+        background-color: var(--white);
+        margin: 8% auto;
+        padding: 40px 50px;
+        width: 95%;
+        max-width: 600px;
+        border-radius: var(--border-radius);
+        box-shadow: var(--shadow-lg);
+        animation: modalSlideIn 0.3s ease-out;
+    }
+
+    @keyframes modalSlideIn {
+        from {
+            opacity: 0;
+            transform: translateY(-60px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .modal-content h2 {
+        margin-bottom: 25px;
+        font-size: 1.8rem;
+        color: var(--text-dark);
+        font-weight: 700;
+    }
+
+    .close-modal {
+        position: absolute;
+        right: 25px;
+        top: 25px;
+        font-size: 24px;
+        cursor: pointer;
+        color: var(--text-light);
+        transition: var(--transition);
+        width: 32px;
+        height: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        background: var(--background-light);
+    }
+
+    .close-modal:hover {
+        color: var(--danger-color);
+        background: #fee2e2;
+        transform: rotate(90deg);
+    }
+
+    .form-group {
+        margin-bottom: 25px;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 10px;
+        color: var(--text-dark);
+        font-weight: 600;
+        font-size: 1.1rem;
+    }
+
+    .form-group input {
+        width: 100%;
+        padding: 12px 15px;
+        border: 2px solid var(--border-color);
+        border-radius: var(--border-radius);
+        font-size: 1rem;
+        transition: var(--transition);
+        background: var(--background-light);
+    }
+
+    .form-group input:focus {
+        outline: none;
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 3px rgba(107, 70, 193, 0.1);
+        background: var(--white);
+    }
+
+    .save-profile {
+        background: var(--gradient-primary);
+        color: var(--white);
+        padding: 14px 30px;
+        border: none;
+        border-radius: var(--border-radius);
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: var(--transition);
+        width: 100%;
+        box-shadow: var(--shadow-md);
+    }
+
+    .save-profile:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 15px rgba(107, 70, 193, 0.2);
+    }
+
+    /* Add a subtle gradient overlay to purple containers */
+    .welcome-section::before,
+    .profile-header::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(45deg, rgba(0, 0, 0, 0.1), transparent);
+        pointer-events: none;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+    <!-- Welcome Section -->
+    <div class="welcome-section">
+        <div class="welcome-content">
+            <h1>Welcome, {{ user.username }}!</h1>
+            <p>Track your progress and manage your account settings here.</p>
+        </div>
+    </div>
+
+    <!-- Quick Stats -->
+    <!-- <div class="quick-stats">
+        <div class="stat-card">
+            <h3>{{ user_profile.total_quizzes }}</h3>
+            <p>Total Quizzes Taken</p>
+        </div>
+        <div class="stat-card">
+            <h3>{{ user_profile.average_score }}%</h3>
+            <p>Average Score</p>
+        </div>
+        <div class="stat-card">
+            <h3>{{ user_profile.completed_quizzes }}</h3>
+            <p>Completed Quizzes</p>
+        </div>
+    </div> -->
+
+    <!-- Profile Section -->
+    <div class="profile-section">
+        <div class="profile-header">
+            <div class="avatar">
+                <img src="{{ user.userprofile.avatar_url }}" alt="{{ user.username }}'s Profile Picture" style="background-color: #eee;">
+            </div>
+            <div class="user-info">
+                <h1>{{ user.username }}</h1>
+                <p>{{ user.email }}</p>
+                <p>Member since {{ user.date_joined|date:"F Y" }}</p>
+                <button class="edit-profile">Edit Profile</button>
+            </div>
+        </div>
+        <div class="profile-details">
+            <div class="detail-group">
+                <h3>Account Information</h3>
+                <div class="detail-item">
+                    <span class="detail-label">Username</span>
+                    <span class="detail-value">{{ user.username }}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Email</span>
+                    <span class="detail-value">{{ user.email }}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Last Login</span>
+                    <span class="detail-value">{{ user.last_login|date:"F j, Y, g:i a" }}</span>
+                </div>
+            </div>
+            <div class="detail-group">
+                <h3>Quiz Statistics</h3>
+                <div class="detail-item">
+                    <span class="detail-label">Total Quizzes</span>
+                    <span class="detail-value">{{ user_profile.total_quizzes }}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Average Score</span>
+                    <span class="detail-value">{{ user_profile.average_score }}%</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Completed Quizzes</span>
+                    <span class="detail-value">{{ user_profile.completed_quizzes }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Profile Modal -->
+<div id="editProfileModal" class="modal">
+    <div class="modal-content">
+        <span class="close-modal">&times;</span>
+        <h2>Edit Profile</h2>
+        <form id="editProfileForm" method="POST" action="{% url 'edit_profile' %}">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" value="{{ user.username }}" required>
+            </div>
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" value="{{ user.email }}" required>
+            </div>
+            <button type="submit" class="save-profile">Save Changes</button>
+        </form>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const modal = document.getElementById('editProfileModal');
+        const editButton = document.querySelector('.edit-profile');
+        const closeModal = document.querySelector('.close-modal');
+        const editProfileForm = document.getElementById('editProfileForm');
+
+        // Open modal
+        editButton.addEventListener('click', function() {
+            modal.style.display = 'block';
+        });
+
+        // Close modal
+        closeModal.addEventListener('click', function() {
+            modal.style.display = 'none';
+        });
+
+        // Close modal when clicking outside
+        window.addEventListener('click', function(event) {
+            if (event.target === modal) {
+                modal.style.display = 'none';
+            }
+        });
+
+        // Handle form submission
+        editProfileForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            
+            fetch(this.action, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+                }
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    // Update the displayed information
+                    document.querySelector('.user-info h1').textContent = data.username;
+                    document.querySelector('.user-info p').textContent = data.email;
+                    document.querySelector('.detail-value:nth-child(2)').textContent = data.username;
+                    document.querySelector('.detail-value:nth-child(4)').textContent = data.email;
+                    
+                    // Close the modal
+                    modal.style.display = 'none';
+                    
+                    // Show success message
+                    alert('Profile updated successfully!');
+                } else {
+                    alert(data.error || 'An error occurred while updating your profile.');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred while updating your profile. Please try again.');
+            });
+        });
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,127 @@
+{% extends "base.html" %}
+
+{% block style %}
+<style>
+    .search-results-container {
+        max-width: 1000px;
+        margin: 100px auto 40px; /* Added top margin to clear navbar */
+        padding: 20px;
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .search-header {
+        margin-bottom: 30px;
+        padding-bottom: 20px;
+        border-bottom: 1px solid #eee;
+    }
+
+    .search-header h1 {
+        font-size: 2rem;
+        color: #333;
+    }
+
+    .search-header h1 span {
+        font-weight: normal;
+        color: #666;
+    }
+
+    .results-section {
+        margin-bottom: 30px;
+    }
+
+    .results-section h2 {
+        font-size: 1.5rem;
+        color: #553c9a; /* Primary dark color */
+        margin-bottom: 15px;
+        padding-bottom: 5px;
+        border-bottom: 2px solid #e2e8f0;
+    }
+
+    .result-list {
+        list-style: none;
+        padding: 0;
+    }
+
+    .result-item {
+        padding: 15px 0;
+        border-bottom: 1px solid #eee;
+        transition: background-color 0.2s ease;
+    }
+    .result-item:last-child {
+        border-bottom: none;
+    }
+     .result-item:hover {
+         background-color: #f8f9fa;
+     }
+
+    .result-item a {
+        text-decoration: none;
+        color: #333;
+        font-weight: 600;
+        display: block;
+    }
+     .result-item a:hover {
+        color: #6b46c1; /* Primary color */
+     }
+
+    .no-results {
+        text-align: center;
+        padding: 40px 20px;
+        color: #666;
+        font-size: 1.1rem;
+    }
+    .no-results p {
+        margin-bottom: 10px;
+    }
+    .no-results a {
+        color: #6b46c1;
+        text-decoration: underline;
+    }
+
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="search-results-container">
+    <div class="search-header">
+        <h1>Search Results for: <span>"{{ query }}"</span></h1>
+    </div>
+
+    {% if has_results %}
+        {% if page_results %}
+        <div class="results-section">
+            <h2>Pages</h2>
+            <ul class="result-list">
+                {% for page in page_results %}
+                <li class="result-item">
+                    <a href="{{ page.url }}">{{ page.name }}</a>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+
+        {% if quiz_results %}
+        <div class="results-section">
+            <h2>Quizzes</h2>
+            <ul class="result-list">
+                {% for quiz in quiz_results %}
+                <li class="result-item">
+                    {# Link to the take_quiz page for this quiz #}
+                    <a href="{% url 'take_quiz' quiz.id %}">{{ quiz.title }}</a>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+
+    {% else %}
+        <div class="no-results">
+            <p>No pages or quizzes found matching your search.</p>
+            <p>Try searching for something else or return to the <a href="{% url 'home' %}">homepage</a>.</p>
+        </div>
+    {% endif %}
+</div>
+{% endblock %} 

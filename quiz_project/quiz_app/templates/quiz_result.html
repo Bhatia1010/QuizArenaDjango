@@ -1,0 +1,247 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block style %}
+<style>
+    :root {
+        --primary-color: #6b46c1;
+        --primary-dark: #553c9a;
+        --primary-light: #805ad5;
+        --secondary-color: #4299e1;
+        --success-color: #48bb78;
+        --warning-color: #ed8936;
+        --danger-color: #e53e3e;
+        --text-dark: #2d3748;
+        --text-light: #4a5568;
+        --background-light: #f8f9fa;
+        --white: #ffffff;
+        --shadow-sm: 0 4px 6px rgba(0, 0, 0, 0.1);
+        --shadow-md: 0 10px 15px rgba(0, 0, 0, 0.1);
+        --shadow-lg: 0 20px 25px rgba(0, 0, 0, 0.1);
+        --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .quiz-container {
+        max-width: 800px;
+        margin: 100px auto 40px;
+        padding: 0 20px;
+    }
+
+    .quiz-header {
+        text-align: center;
+        margin-bottom: 40px;
+    }
+
+    .quiz-title {
+        font-size: 2.5rem;
+        color: var(--text-dark);
+        margin-bottom: 15px;
+        font-weight: 700;
+    }
+
+    .quiz-card {
+        background: var(--white);
+        border-radius: 15px;
+        box-shadow: var(--shadow-md);
+        padding: 30px;
+        margin-bottom: 40px;
+    }
+
+    .score-section {
+        text-align: center;
+        margin-bottom: 40px;
+        padding: 20px;
+        background: var(--background-light);
+        border-radius: 10px;
+    }
+
+    .score-circle {
+        width: 120px;
+        height: 120px;
+        margin: 0 auto 20px;
+        border-radius: 50%;
+        background: var(--primary-color);
+        color: var(--white);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2.5rem;
+        font-weight: 700;
+        box-shadow: var(--shadow-sm);
+    }
+
+    .score-text {
+        font-size: 1.2rem;
+        color: var(--text-dark);
+        margin-bottom: 10px;
+    }
+
+    .details-section {
+        margin-bottom: 30px;
+    }
+
+    .detail-item {
+        display: flex;
+        justify-content: space-between;
+        padding: 10px 0;
+        border-bottom: 1px solid var(--background-light);
+    }
+
+    .detail-label {
+        color: var(--text-light);
+        font-weight: 600;
+    }
+
+    .detail-value {
+        color: var(--text-dark);
+    }
+
+    .question-card {
+        background: var(--background-light);
+        border-radius: 10px;
+        padding: 20px;
+        margin-bottom: 20px;
+    }
+
+    .question-text {
+        font-size: 1.1rem;
+        color: var(--text-dark);
+        margin-bottom: 15px;
+        font-weight: 600;
+    }
+
+    .option {
+        display: block;
+        padding: 12px 15px;
+        margin-bottom: 10px;
+        border-radius: 8px;
+        background: var(--white);
+        border: 1px solid var(--background-light);
+        transition: var(--transition);
+    }
+
+    .correct-answer {
+        background: var(--success-color);
+        color: var(--white);
+        border-color: var(--success-color);
+    }
+
+    .incorrect-answer {
+        background: var(--danger-color);
+        color: var(--white);
+        border-color: var(--danger-color);
+    }
+
+    .selected-answer {
+        background: var(--primary-light);
+        color: var(--white);
+        border-color: var(--primary-light);
+    }
+
+    .answer-feedback {
+        margin-top: 10px;
+        font-weight: 600;
+    }
+
+    .submit-btn {
+        display: block;
+        width: 100%;
+        padding: 15px;
+        background: var(--primary-color);
+        color: var(--white);
+        border: none;
+        border-radius: 8px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: var(--transition);
+        text-align: center;
+        text-decoration: none;
+    }
+
+    .submit-btn:hover {
+        background: var(--primary-dark);
+        transform: translateY(-2px);
+    }
+
+    @media (max-width: 768px) {
+        .quiz-container {
+            padding: 0 15px;
+        }
+
+        .quiz-title {
+            font-size: 2rem;
+        }
+
+        .score-circle {
+            width: 100px;
+            height: 100px;
+            font-size: 2rem;
+        }
+
+        .option {
+            padding: 10px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="quiz-container">
+    <div class="quiz-header">
+        <h1 class="quiz-title">Quiz Results</h1>
+    </div>
+
+    <div class="quiz-card">
+        <div class="score-section">
+            <div class="score-circle">
+                {{ score }}%
+            </div>
+            <div class="score-text">
+                You scored {{ correct_answers }} out of {{ total_questions }} questions correctly
+            </div>
+        </div>
+
+        <div class="details-section">
+            <div class="detail-item">
+                <span class="detail-label">Quiz Title:</span>
+                <span class="detail-value">{{ quiz.title }}</span>
+            </div>
+            <div class="detail-item">
+                <span class="detail-label">Completed By:</span>
+                <span class="detail-value">{{ user.username }}</span>
+            </div>
+            <div class="detail-item">
+                <span class="detail-label">Date Completed:</span>
+                <span class="detail-value">{{ completed_at|date:"F j, Y, g:i a" }}</span>
+            </div>
+        </div>
+
+        <div class="answers-section">
+            <h2 class="answers-title">Your Answers</h2>
+            {% for question_id, answer_data in answers.items %}
+            <div class="question-card">
+                <div class="question-text">{{ answer_data.question_text }}</div>
+                <div class="answer-options">
+                    {% for option, text in answer_data.options.items %}
+                    <div class="option {% if option == answer_data.correct_answer %}correct-answer{% endif %} {% if option == answer_data.selected_answer and option != answer_data.correct_answer %}incorrect-answer{% endif %} {% if option == answer_data.selected_answer %}selected-answer{% endif %}">
+                        {{ option }}. {{ text }}
+                    </div>
+                    {% endfor %}
+                </div>
+                <div class="answer-feedback">
+                    {% if answer_data.is_correct %}
+                    <span style="color: var(--success-color);">✓ Correct</span>
+                    {% else %}
+                    <span style="color: var(--danger-color);">✗ Incorrect</span>
+                    <span style="color: var(--text-light);">Correct answer: {{ answer_data.correct_answer }}</span>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <a href="{% url 'dashboard' %}" class="submit-btn">Back to Dashboard</a>
+    </div>
+</div>
+{% endblock %} 

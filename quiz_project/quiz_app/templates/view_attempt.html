@@ -1,0 +1,299 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block style %}
+<style>
+    :root {
+        --primary-color: #6b46c1;
+        --primary-dark: #553c9a;
+        --primary-light: #805ad5;
+        --secondary-color: #4299e1;
+        --success-color: #48bb78;
+        --warning-color: #ed8936;
+        --danger-color: #e53e3e;
+        --text-dark: black;
+        --text-light: black;
+        --background-light: #f8f9fa;
+        --white: #ffffff;
+        --shadow-sm: 0 4px 6px rgba(0, 0, 0, 0.1);
+        --shadow-md: 0 10px 15px rgba(0, 0, 0, 0.1);
+        --shadow-lg: 0 20px 25px rgba(0, 0, 0, 0.1);
+        --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .dashboard-container {
+        width: 1300px;
+        margin: 100px auto 40px;
+        padding: 0 20px;
+    }
+
+    .welcome-section {
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%);
+        padding: 40px;
+        border-radius: 20px;
+        color: var(--white);
+        margin-bottom: 40px;
+        position: relative;
+        overflow: hidden;
+        box-shadow: var(--shadow-lg);
+    }
+
+    .welcome-section::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3z' fill='%23ffffff' fill-opacity='0.1'/%3E%3C/svg%3E");
+        opacity: 0.2;
+    }
+
+    .welcome-content {
+        position: relative;
+        z-index: 1;
+    }
+
+    .welcome-content h1 {
+        font-size: 2.5rem;
+        margin-bottom: 15px;
+        font-weight: 700;
+        color: #ffffff;
+    }
+
+    .welcome-content p {
+        font-size: 1.2rem;
+        opacity: 0.9;
+        max-width: 600px;
+        color: #ffffff;
+    }
+
+    .attempt-details {
+        background: var(--white);
+        border-radius: 15px;
+        box-shadow: var(--shadow-md);
+        padding: 30px;
+        margin-bottom: 40px;
+    }
+
+    .detail-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+    }
+
+    .detail-card {
+        background: var(--background-light);
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: var(--shadow-sm);
+    }
+
+    .detail-label {
+        color: var(--text-light);
+        font-size: 0.9rem;
+        margin-bottom: 5px;
+    }
+
+    .detail-value {
+        color: var(--text-dark);
+        font-size: 1.2rem;
+        font-weight: 600;
+    }
+
+    .answers-section {
+        background: var(--white);
+        border-radius: 15px;
+        box-shadow: var(--shadow-md);
+        padding: 30px;
+        margin-bottom: 40px;
+    }
+
+    .answers-section h2 {
+        color: var(--text-dark);
+        margin-bottom: 20px;
+        font-size: 1.8rem;
+        font-weight: 600;
+    }
+
+    .answer-item {
+        margin: 30px 0;
+        padding: 25px;
+        border-radius: 10px;
+        background: var(--background-light);
+        box-shadow: var(--shadow-sm);
+        transition: var(--transition);
+    }
+
+    .answer-item:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-md);
+    }
+
+    .answer-item:first-child {
+        margin-top: 0;
+    }
+
+    .answer-item:last-child {
+        margin-bottom: 0;
+    }
+
+    .answer-item.correct {
+        border-left: 4px solid var(--success-color);
+    }
+
+    .answer-item.incorrect {
+        border-left: 4px solid var(--danger-color);
+    }
+
+    .question-text {
+        font-weight: 600;
+        color: var(--text-dark);
+        margin-bottom: 20px;
+        font-size: 1.2rem;
+        line-height: 1.4;
+    }
+
+    .options {
+        margin-left: 25px;
+        margin-bottom: 20px;
+    }
+
+    .option {
+        margin-bottom: 15px;
+        padding: 12px;
+        border-radius: 8px;
+        background: var(--white);
+        box-shadow: var(--shadow-sm);
+        transition: var(--transition);
+    }
+
+    .option:hover {
+        transform: translateX(5px);
+    }
+
+    .option.selected {
+        background: var(--primary-light);
+        color: var(--white);
+    }
+
+    .option.correct {
+        background: var(--success-color);
+        color: var(--white);
+    }
+
+    .answer-feedback {
+        margin-top: 20px;
+        padding-top: 15px;
+        border-top: 1px solid var(--background-light);
+    }
+
+    .feedback-icon {
+        display: inline-block;
+        margin-right: 10px;
+        font-size: 1.2rem;
+    }
+
+    .feedback-text {
+        font-weight: 500;
+        display: inline-block;
+    }
+
+    .btn {
+        padding: 10px 20px;
+        border-radius: 8px;
+        font-weight: 600;
+        transition: var(--transition);
+        text-decoration: none;
+        display: inline-block;
+    }
+
+    .btn-primary {
+        background: var(--primary-color);
+        color: var(--white);
+    }
+
+    .btn-primary:hover {
+        background: var(--primary-dark);
+        transform: translateY(-2px);
+    }
+
+    @media (max-width: 768px) {
+        .welcome-section {
+            padding: 30px 20px;
+        }
+
+        .welcome-content h1 {
+            font-size: 2rem;
+        }
+
+        .detail-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .answer-item {
+            padding: 20px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+    <section class="welcome-section">
+        <div class="welcome-content">
+            <h1>Quiz Attempt Review</h1>
+            <p>Review the user's answers and performance in detail</p>
+        </div>
+    </section>
+
+    <div class="attempt-details">
+        <div class="detail-grid">
+            <div class="detail-card">
+                <div class="detail-label">User</div>
+                <div class="detail-value">{{ user.username }}</div>
+            </div>
+            <div class="detail-card">
+                <div class="detail-label">Quiz</div>
+                <div class="detail-value">{{ quiz.title }}</div>
+            </div>
+            <div class="detail-card">
+                <div class="detail-label">Score</div>
+                <div class="detail-value">{{ score }}%</div>
+            </div>
+            <div class="detail-card">
+                <div class="detail-label">Date</div>
+                <div class="detail-value">{{ completed_at|date:"F d, Y H:i" }}</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="answers-section">
+        <h2>Question-by-Question Review</h2>
+        {% for question_id, answer_data in result.answers.items %}
+        <div class="answer-item {% if answer_data.selected_answer == answer_data.correct_answer %}correct{% else %}incorrect{% endif %}">
+            <div class="question-text">{{ answer_data.question_text }}</div>
+            <div class="options">
+                {% for option, text in answer_data.options.items %}
+                <div class="option {% if option == answer_data.selected_answer %}selected{% endif %} {% if option == answer_data.correct_answer %}correct{% endif %}">
+                    {{ option }}. {{ text }}
+                </div>
+                {% endfor %}
+            </div>
+            <div class="answer-feedback">
+                {% if answer_data.selected_answer == answer_data.correct_answer %}
+                    <span class="feedback-icon">✓</span>
+                    <span class="feedback-text" style="color: var(--success-color);">Correct Answer</span>
+                {% else %}
+                    <span class="feedback-icon">✗</span>
+                    <span class="feedback-text" style="color: var(--danger-color);">Incorrect Answer</span>
+                    <p style="margin-top: 10px; color: var(--text-light);">Correct answer was: {{ answer_data.correct_answer }}</p>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <a href="{% url 'staff_dashboard' %}" class="btn btn-primary">Back to Dashboard</a>
+</div>
+{% endblock %} 

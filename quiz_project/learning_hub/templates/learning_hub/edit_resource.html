@@ -1,0 +1,160 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block style %}
+<style>
+    .edit-container {
+        max-width: 800px;
+        margin: 100px auto 40px;
+        padding: 0 20px;
+    }
+
+    .form-header {
+        margin-bottom: 30px;
+        text-align: center;
+    }
+
+    .form-header h1 {
+        font-size: 2.5rem;
+        color: #2d3748;
+        margin-bottom: 15px;
+    }
+
+    .form-header p {
+        color: #4a5568;
+        font-size: 1.1rem;
+    }
+
+    .form-container {
+        background: white;
+        padding: 40px;
+        border-radius: 15px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        color: #2d3748;
+        font-weight: 500;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        font-size: 1rem;
+    }
+
+    .form-control:focus {
+        outline: none;
+        border-color: #6b46c1;
+        box-shadow: 0 0 0 3px rgba(107, 70, 193, 0.2);
+    }
+
+    .error-text {
+        color: #e53e3e;
+        font-size: 0.875rem;
+        margin-top: 5px;
+    }
+
+    .button-group {
+        display: flex;
+        gap: 15px;
+        margin-top: 20px;
+    }
+
+    .edit-btn {
+        display: inline-block;
+        padding: 12px 24px;
+        background: #6b46c1;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 1rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .edit-btn:hover {
+        background: #553c9a;
+        transform: translateY(-2px);
+    }
+
+    .cancel-btn {
+        display: inline-block;
+        padding: 12px 24px;
+        background: #e2e8f0;
+        color: #2d3748;
+        border: none;
+        border-radius: 8px;
+        font-size: 1rem;
+        font-weight: 500;
+        cursor: pointer;
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+
+    .cancel-btn:hover {
+        background: #cbd5e0;
+        transform: translateY(-2px);
+    }
+
+    @media (max-width: 768px) {
+        .edit-container {
+            padding: 0 15px;
+        }
+
+        .form-container {
+            padding: 20px;
+        }
+
+        .button-group {
+            flex-direction: column;
+        }
+
+        .edit-btn, .cancel-btn {
+            width: 100%;
+            text-align: center;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="edit-container">
+    <div class="form-header">
+        <h1>Edit Resource</h1>
+        <p>Update the resource for {{ topic.title }}</p>
+    </div>
+
+    <div class="form-container">
+        <form method="post">
+            {% csrf_token %}
+            
+            {% for field in form %}
+            <div class="form-group">
+                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                {{ field }}
+                {% if field.errors %}
+                    {% for error in field.errors %}
+                        <p class="error-text">{{ error }}</p>
+                    {% endfor %}
+                {% endif %}
+            </div>
+            {% endfor %}
+
+            <div class="button-group">
+                <button type="submit" class="edit-btn">Save Changes</button>
+                <a href="{% url 'learning_hub:resource_detail' topic.id resource.id %}" class="cancel-btn">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %} 

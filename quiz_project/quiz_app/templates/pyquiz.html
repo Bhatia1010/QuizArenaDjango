@@ -1,0 +1,191 @@
+{% extends "quiz_base.html" %}
+{% load static %}
+
+{% block style %}
+<style>
+    :root {
+        --primary-color: #6b46c1;
+        --primary-dark: #553c9a;
+        --primary-light: #805ad5;
+        --secondary-color: #4299e1;
+        --success-color: #48bb78;
+        --warning-color: #ed8936;
+        --danger-color: #e53e3e;
+        --text-dark: #2d3748;
+        --text-light: #4a5568;
+        --background-light: #f8f9fa;
+        --white: #ffffff;
+        --shadow-sm: 0 4px 6px rgba(0, 0, 0, 0.1);
+        --shadow-md: 0 10px 15px rgba(0, 0, 0, 0.1);
+        --shadow-lg: 0 20px 25px rgba(0, 0, 0, 0.1);
+        --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .quiz-container {
+        max-width: 800px;
+        margin: 40px auto;
+        padding: 20px;
+    }
+
+    .quiz-header {
+        text-align: center;
+        margin-bottom: 40px;
+    }
+
+    .quiz-header h1 {
+        font-size: 2.5rem;
+        color: var(--text-dark);
+        margin-bottom: 10px;
+    }
+
+    .quiz-header p {
+        color: var(--text-light);
+        font-size: 1.1rem;
+    }
+
+    .quiz-form {
+        background: var(--white);
+        border-radius: 20px;
+        padding: 40px;
+        box-shadow: var(--shadow-md);
+    }
+
+    .question-card {
+        background: var(--background-light);
+        border-radius: 15px;
+        padding: 25px;
+        margin-bottom: 30px;
+        transition: var(--transition);
+    }
+
+    .question-card:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-sm);
+    }
+
+    .question-number {
+        font-size: 1.2rem;
+        color: var(--primary-color);
+        margin-bottom: 15px;
+        font-weight: 600;
+    }
+
+    .question-text {
+        font-size: 1.1rem;
+        color: var(--text-dark);
+        margin-bottom: 20px;
+        line-height: 1.5;
+    }
+
+    .options-container {
+        display: grid;
+        gap: 15px;
+    }
+
+    .option-label {
+        display: block;
+        padding: 15px;
+        background: var(--white);
+        border: 2px solid var(--background-light);
+        border-radius: 8px;
+        cursor: pointer;
+        transition: var(--transition);
+    }
+
+    .option-label:hover {
+        background: var(--primary-light);
+        color: var(--white);
+        border-color: var(--primary-light);
+    }
+
+    .option-input {
+        margin-right: 10px;
+    }
+
+    .submit-btn {
+        display: block;
+        width: 100%;
+        padding: 15px;
+        background: var(--primary-color);
+        color: var(--white);
+        border: none;
+        border-radius: 8px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: var(--transition);
+    }
+
+    .submit-btn:hover {
+        background: var(--primary-dark);
+        transform: translateY(-2px);
+    }
+
+    .error-message {
+        background: var(--danger-color);
+        color: var(--white);
+        padding: 15px;
+        border-radius: 10px;
+        margin-top: 20px;
+        text-align: center;
+    }
+
+    @media (max-width: 768px) {
+        .quiz-container {
+            padding: 10px;
+        }
+
+        .quiz-form {
+            padding: 20px;
+        }
+
+        .question-card {
+            padding: 15px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="quiz-container">
+    <div class="quiz-header">
+        <h1>Python Quiz</h1>
+        <p>Test your Python knowledge with these questions</p>
+    </div>
+
+    <form class="quiz-form" action="{% url 'submit_quiz' %}" method="POST">
+        {% csrf_token %}
+        {% for question in questions %}
+        <div class="question-card">
+            <div class="question-number">Question {{ forloop.counter }}</div>
+            <div class="question-text">{{ question.question_text }}</div>
+            <div class="options-container">
+                <label class="option-label">
+                    <input type="radio" class="option-input" name="q{{ question.id }}" value="A" required>
+                    {{ question.option_a }}
+                </label>
+                <label class="option-label">
+                    <input type="radio" class="option-input" name="q{{ question.id }}" value="B" required>
+                    {{ question.option_b }}
+                </label>
+                <label class="option-label">
+                    <input type="radio" class="option-input" name="q{{ question.id }}" value="C" required>
+                    {{ question.option_c }}
+                </label>
+                <label class="option-label">
+                    <input type="radio" class="option-input" name="q{{ question.id }}" value="D" required>
+                    {{ question.option_d }}
+                </label>
+            </div>
+        </div>
+        {% endfor %}
+        <button type="submit" class="submit-btn">Submit Quiz</button>
+    </form>
+
+    {% if error %}
+    <div class="error-message">
+        <p>{{ error }}</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,839 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Application</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    {% block style %}{% endblock %}
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background-color: #f5f5f5;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            margin: 0;
+            padding: 0;
+        }
+
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: linear-gradient(135deg, #6b46c1 0%, #805ad5 100%);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        .navbar.scrolled {
+            padding: 0.8rem 2rem;
+            background: rgba(107, 70, 193, 0.95);
+            backdrop-filter: blur(10px);
+        }
+
+        .navbar .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: transform 0.3s ease;
+        }
+
+        .navbar .logo:hover {
+            transform: scale(1.05);
+        }
+
+        .navbar .logo img {
+            height: 45px;
+            width: 45px;
+            border-radius: 50%;
+            border: 2px solid white;
+            transition: all 0.3s ease;
+            object-fit: cover;
+        }
+
+        .navbar .logo span {
+            color: white;
+            font-size: 1.5rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        .navbar .nav-links {
+            display: flex;
+            gap: 25px;
+            align-items: center;
+        }
+
+        .navbar a {
+            text-decoration: none;
+            color: white;
+            font-weight: 500;
+            padding: 8px 15px;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+            position: relative;
+            font-size: 1rem;
+        }
+
+        .navbar a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 0;
+            height: 2px;
+            background: white;
+            transition: all 0.3s ease;
+            transform: translateX(-50%);
+        }
+
+        .navbar a:hover::after {
+            width: 100%;
+        }
+
+        .navbar a:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .navbar .search-form {
+            position: relative;
+            margin: 0 20px;
+            flex: 0 1 400px;
+        }
+
+        .navbar input[type="search"] {
+            width: 100%;
+            padding: 12px 20px;
+            padding-right: 40px;
+            border-radius: 25px;
+            border: none;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .navbar input[type="search"]::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .navbar input[type="search"]:focus {
+            outline: none;
+            background: rgba(255, 255, 255, 0.3);
+            box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.2);
+        }
+
+        .navbar .search-icon {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: rgba(255, 255, 255, 0.7);
+            pointer-events: none;
+        }
+
+        .navbar .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 5px;
+        }
+
+        @media (max-width: 1024px) {
+            .navbar .search-form {
+                flex: 0 1 300px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .navbar {
+                padding: 1rem;
+            }
+
+            .navbar .mobile-menu-btn {
+                display: block;
+            }
+
+            .navbar .nav-links {
+                position: fixed;
+                top: 70px;
+                left: -100%;
+                width: 100%;
+                height: calc(100vh - 70px);
+                background: rgba(107, 70, 193, 0.95);
+                backdrop-filter: blur(10px);
+                flex-direction: column;
+                padding: 2rem;
+                transition: all 0.3s ease;
+                gap: 20px;
+            }
+
+            .navbar .nav-links.active {
+                left: 0;
+            }
+
+            .navbar .search-form {
+                margin: 0;
+                flex: 1;
+                max-width: 100%;
+            }
+
+            .navbar a {
+                width: 100%;
+                text-align: center;
+                padding: 12px;
+            }
+
+            .navbar a::after {
+                display: none;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .navbar .logo span {
+                font-size: 1.2rem;
+            }
+
+            .navbar .logo img {
+                height: 35px;
+                width: 35px;
+            }
+        }
+
+        .container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 20vh;
+            /* margin-left: 20vw; */
+            /* width: 40vw;
+            height: 40vh; */
+        }
+
+        .container>form {
+            width: 40vw;
+            height: 40vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .main-content {
+            flex: 1;
+            padding-top: 80px; /* Add padding to account for fixed navbar */
+            min-height: calc(100vh - 80px); /* Subtract navbar height */
+            display: flex;
+            flex-direction: column;
+        }
+
+        footer {
+            background: linear-gradient(135deg, #6b46c1 0%, #805ad5 100%);
+            color: #fff;
+            padding: 3rem 0 1rem;
+            margin-top: auto; /* Push footer to bottom */
+            font-family: 'Poppins', sans-serif;
+            position: relative;
+            overflow: hidden;
+            width: 100%;
+        }
+
+        footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 100%);
+            pointer-events: none;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            padding: 0 2rem;
+        }
+
+        .footer-section {
+            padding: 1rem;
+        }
+
+        .footer-section h4 {
+            color: #fff;
+            font-size: 1.2rem;
+            margin-bottom: 1.5rem;
+            position: relative;
+            padding-bottom: 0.5rem;
+        }
+
+        .footer-section h4::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 50px;
+            height: 2px;
+            background: #fff;
+            transition: width 0.3s ease;
+        }
+
+        .footer-section:hover h4::after {
+            width: 100%;
+        }
+
+        .footer-section p {
+            color: #ccc;
+            margin-bottom: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .footer-section a {
+            color: rgba(255, 255, 255, 0.9);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .footer-section a:hover {
+            color: #fff;
+            transform: translateX(5px);
+        }
+
+        .social-links {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .social-logo {
+            width: 24px;
+            height: 24px;
+            object-fit: contain;
+            transition: transform 0.3s ease;
+        }
+
+        .social-links a {
+            background: rgba(255, 255, 255, 0.1);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            color: #fff;
+        }
+
+        .social-links a:hover {
+            transform: translateY(-3px);
+        }
+
+        /* Facebook */
+        .social-links a.facebook:hover {
+            background: #1877f2;
+        }
+
+        /* Twitter */
+        .social-links a.twitter:hover {
+            background: #1da1f2;
+        }
+
+        /* Instagram */
+        .social-links a.instagram:hover {
+            background: #e4405f;
+        }
+
+        /* LinkedIn */
+        .social-links a.linkedin:hover {
+            background: #0a66c2;
+        }
+
+        /* YouTube */
+        .social-links a.youtube:hover {
+            background: #ff0000;
+        }
+
+        /* GitHub */
+        .social-links a.github:hover {
+            background: #333;
+        }
+
+        .social-links a i {
+            font-size: 1.2rem;
+            transition: transform 0.3s ease;
+        }
+
+        .social-links a:hover i {
+            transform: scale(1.2);
+        }
+
+        .newsletter-form {
+            margin-top: 1.5rem;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .input-group input {
+            flex: 1;
+            padding: 0.8rem;
+            border: none;
+            border-radius: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+        }
+
+        .input-group input::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .subscribe-btn {
+            background: rgba(255, 255, 255, 0.2);
+            color: #fff;
+            border: none;
+            padding: 0 1.2rem;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .subscribe-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .app-download {
+            margin-top: 2rem;
+        }
+
+        .app-download h5 {
+            color: #fff;
+            margin-bottom: 1rem;
+        }
+
+        .app-links {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .app-links a {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            color: #fff;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .app-store {
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        .play-store {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .app-links a:hover {
+            transform: translateY(-2px);
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .footer-bottom {
+            max-width: 1200px;
+            margin: 2rem auto 0;
+            padding: 1rem 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .footer-bottom p {
+            color: #ccc;
+            margin: 0;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .footer-links a {
+            color: rgba(255, 255, 255, 0.9);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            color: #fff;
+        }
+
+        @media (max-width: 768px) {
+            .footer-content {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+
+            .footer-section h4::after {
+                left: 50%;
+                transform: translateX(-50%);
+            }
+
+            .social-links {
+                justify-content: center;
+            }
+
+            .app-links {
+                justify-content: center;
+            }
+
+            .footer-bottom {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .footer-links {
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+        }
+
+        /* Flash Messages - Positioned at the top with smooth animations */
+        .flash-messages {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 90%;
+            max-width: 500px;
+            z-index: 1000;
+        }
+
+        .flash-message {
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 500;
+            text-align: center;
+            margin-bottom: 10px;
+            opacity: 0;
+            animation: fadeInSlide 0.5s ease-out forwards;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Message types */
+        .flash-success {
+            background: #28a745;
+            color: #fff;
+        }
+
+        .flash-error {
+            background: #dc3545;
+            color: #fff;
+        }
+
+        .flash-warning {
+            background: #ffc107;
+            color: #333;
+        }
+
+        .flash-info {
+            background: #17a2b8;
+            color: #fff;
+        }
+
+        /* Close (Dismiss) Button */
+        .flash-message .close-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-left: 15px;
+            transition: opacity 0.3s ease;
+        }
+
+        .flash-message .close-btn:hover {
+            opacity: 0.7;
+        }
+
+        /* Fade-in and Slide-down animation */
+        @keyframes fadeInSlide {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Fade-out animation */
+        @keyframes fadeOut {
+            from {
+                opacity: 1;
+                transform: translateY(0);
+            }
+
+            to {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+        }
+
+        /* Hide message when dismissed */
+        .flash-message.hide {
+            animation: fadeOut 0.3s ease-out forwards;
+        }
+    </style>
+</head>
+
+
+<body>
+    <nav class="navbar">
+        <div class="logo">
+            <img src="{% static 'images/WhatsApp Image 2025-02-21 at 16.20.27.jpeg' %}" alt="Logo" />
+            <span>Quiz Arena</span>
+        </div>
+        
+        <form method="GET" action="{% url 'search_results' %}" class="search-form">
+            <input type="search" name="q" placeholder="Search quizzes & pages..." value="{{ request.GET.q }}">
+            <i class="fas fa-search search-icon"></i>
+        </form>
+        
+        <button class="mobile-menu-btn">
+            <i class="fas fa-bars"></i>
+        </button>
+
+        <div class="nav-links">
+            <a href="{% url 'home' %}"><i class="fas fa-home"></i> Home</a>
+
+            {% if user.is_authenticated %}
+                {% if user.is_staff %}
+                    <a href="{% url 'staff_dashboard' %}"><i class="fas fa-tachometer-alt"></i> Staff Dashboard</a>
+                    <a href="{% url 'learning_hub:topic_list' %}"><i class="fas fa-book"></i> Learning Hub</a>
+                {% else %}
+                    <a href="{% url 'dashboard' %}"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+                    <a href="{% url 'profile' %}"><i class="fas fa-user"></i> Profile</a>
+                    <a href="{% url 'learning_hub:topic_list' %}"><i class="fas fa-book"></i> Learning Hub</a>
+                {% endif %}
+                <a href="{% url 'logout' %}" onclick="return confirm('Are you sure you want to logout?')">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </a>
+            {% elif email == "admin@gmail.com" %}
+                <a href="{% url 'admindashboard' %}"><i class="fas fa-user-shield"></i> Admin Dashboard</a>
+            {% else %}
+                <a href="{% url 'register' %}"><i class="fas fa-user-plus"></i> Sign Up</a>
+                <a href="{% url 'login' %}"><i class="fas fa-sign-in-alt"></i> Login</a>
+            {% endif %}
+            
+            <a href="{% url 'about_us' %}"><i class="fas fa-info-circle"></i> About us</a>
+            
+        </div>
+    </nav>
+
+    {% if messages %}
+    <div class="flash-messages">
+        {% for message in messages %}
+        <div class="flash-message flash-{{ message.tags }}">
+            <span>{{ message }}</span>
+            <button class="close-btn" onclick="dismissFlash(this)">&times;</button>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <div class="main-content">
+        {% block content %}
+        {% endblock %}
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>Quick Links</h4>
+                <a href="{% url 'home' %}"><p><i class="fas fa-home"></i> Home</p></a>
+                <a href="{% url 'dashboard' %}"><p><i class="fas fa-tachometer-alt"></i> Dashboard</p></a>
+                <a href="{% url 'profile' %}"><p><i class="fas fa-user"></i> Profile</p></a>
+                <a href="{% url 'about_us' %}"><p><i class="fas fa-info-circle"></i> About Us</p></a>
+                <a href="{% url 'contact_us' %}"><p><i class="fas fa-envelope"></i> Contact Us</p></a>
+                <a href="{% url 'quiz_categories' %}"><p><i class="fas fa-th-large"></i> Quiz Categories</p></a>
+            </div>
+            <div class="footer-section">
+                <h4>Learning Resources</h4>
+                <a href="{% url 'pyquiz' %}"><p><i class="fab fa-python"></i> Python Quizzes</p></a>
+                <a href="{% url 'cppquiz' %}"><p><i class="fas fa-code"></i> C++ Quizzes</p></a>
+                <a href="{% url 'leaderboard' %}"><p><i class="fas fa-trophy"></i> Leaderboard</p></a>
+                <a href="{% url 'help_center' %}"><p><i class="fas fa-question-circle"></i> Help Center</p></a>
+                <a href="{% url 'create_quiz' %}"><p><i class="fas fa-plus-circle"></i> Create Quiz</p></a>
+                <a href="{% url 'search_results' %}"><p><i class="fas fa-search"></i> Search Quizzes</p></a>
+            </div>
+            <div class="footer-section">
+                <h4>Support</h4>
+                <a href="{% url 'contact_us' %}"><p><i class="fas fa-envelope"></i> Contact Us</p></a>
+                <a href="{% url 'help_center' %}"><p><i class="fas fa-life-ring"></i> Help & Support</p></a>
+                <a href="{% url 'faq' %}"><p><i class="fas fa-question"></i> FAQ</p></a>
+                <a href="{% url 'feedback' %}"><p><i class="fas fa-comment-alt"></i> Feedback</p></a>
+                <a href="{% url 'report_issue' %}"><p><i class="fas fa-bug"></i> Report Issue</p></a>
+                <a href="{% url 'suggest_quiz' %}"><p><i class="fas fa-lightbulb"></i> Suggest Quiz</p></a>
+            </div>
+            <div class="footer-section">
+                <h4>Connect With Us</h4>
+                <p><i class="fas fa-envelope"></i> support@quizapp.com</p>
+                <p><i class="fas fa-phone"></i> +1 (555) 123-4567</p>
+                <p><i class="fas fa-map-marker-alt"></i> 123 Quiz Street, Knowledge City</p>
+                <div class="social-links">
+                    <a href="https://facebook.com/quizapp" target="_blank" title="Facebook" class="facebook">
+                        <i class="fab fa-facebook-f"></i>
+                    </a>
+                    <a href="https://twitter.com/quizapp" target="_blank" title="Twitter" class="twitter">
+                        <i class="fab fa-twitter"></i>
+                    </a>
+                    <a href="https://instagram.com/quizapp" target="_blank" title="Instagram" class="instagram">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                    <a href="https://linkedin.com/company/quizapp" target="_blank" title="LinkedIn" class="linkedin">
+                        <i class="fab fa-linkedin-in"></i>
+                    </a>
+                    <a href="https://youtube.com/quizapp" target="_blank" title="YouTube" class="youtube">
+                        <i class="fab fa-youtube"></i>
+                    </a>
+                    <a href="https://github.com/quizapp" target="_blank" title="GitHub" class="github">
+                        <i class="fab fa-github"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="footer-section">
+                <h4>Newsletter</h4>
+                <p>Subscribe to our newsletter for updates and new quizzes</p>
+                <form class="newsletter-form" method="post" action="{% url 'subscribe_newsletter' %}">
+                    {% csrf_token %}
+                    <div class="input-group">
+                        <input type="email" name="email" placeholder="Enter your email" required>
+                        <button type="submit" class="subscribe-btn">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </div>
+                </form>
+                <div class="app-download">
+                    <h5>Download Our App</h5>
+                    <div class="app-links">
+                        <a href="#" class="app-store">
+                            <i class="fab fa-apple"></i>
+                            <span>App Store</span>
+                        </a>
+                        <a href="#" class="play-store">
+                            <i class="fab fa-google-play"></i>
+                            <span>Play Store</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 Quiz App. All rights reserved.</p>
+            <div class="footer-links">
+                <a href="{% url 'privacy_policy' %}">Privacy Policy</a>
+                <a href="{% url 'terms_of_service' %}">Terms of Service</a>
+                <a href="{% url 'cookie_policy' %}">Cookie Policy</a>
+                <a href="{% url 'sitemap' %}">Sitemap</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Navbar scroll effect
+        window.addEventListener('scroll', function() {
+            const navbar = document.querySelector('.navbar');
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+
+        // Mobile menu toggle
+        const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+        const navLinks = document.querySelector('.nav-links');
+
+        mobileMenuBtn.addEventListener('click', function() {
+            navLinks.classList.toggle('active');
+            const icon = this.querySelector('i');
+            icon.classList.toggle('fa-bars');
+            icon.classList.toggle('fa-times');
+        });
+
+        // Close mobile menu when clicking outside
+        document.addEventListener('click', function(event) {
+            if (!navLinks.contains(event.target) && !mobileMenuBtn.contains(event.target)) {
+                navLinks.classList.remove('active');
+                const icon = mobileMenuBtn.querySelector('i');
+                icon.classList.remove('fa-times');
+                icon.classList.add('fa-bars');
+            }
+        });
+
+        $(document).ready(function () {
+            $('.quiz-section').each(function (i) {
+                $(this).css('animation', 'fadeIn 0.5s ease-out forwards ' + (i * 0.2) + 's');
+            });
+        });
+
+        function dismissFlash(button) {
+            let flashMessage = button.parentElement;
+            flashMessage.classList.add("hide");
+            setTimeout(() => {
+                flashMessage.remove();
+            }, 300);
+        }
+
+        setTimeout(() => {
+            document.querySelectorAll(".flash-message").forEach((msg) => {
+                msg.classList.add("hide");
+                setTimeout(() => msg.remove(), 300);
+            });
+        }, 5000);
+    </script>
+    {% block scripts %}{% endblock %}
+</body>
+
+</html>

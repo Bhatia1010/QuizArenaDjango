@@ -1,0 +1,306 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<style>
+    .home-container {
+        width: 100%;
+        margin: 120px auto 0;
+        padding: 0 20px;
+    }
+
+    .white-section {
+        background: white;
+        border-radius: 15px;
+        padding: 30px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        margin-bottom: 30px;
+        width: 100%;
+        max-width: 1400px;
+        margin-left: auto;
+        margin-right: auto;
+        margin-top: 20px;
+    }
+
+    .section-title {
+        font-size: 28px;
+        color: #333;
+        margin-bottom: 30px;
+        padding: 0 20px;
+    }
+
+    .cards-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 20px;
+        padding: 0;
+        width: 100%;
+    }
+
+    .quiz-card {
+        background: #6b46c1;
+        border-radius: 12px;
+        padding: 20px 15px;
+        color: white;
+        text-align: center;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        min-height: 400px;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .quiz-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    .quiz-card img {
+        width: 160px;
+        height: 140px;
+        object-fit: cover;
+        margin-bottom: 15px;
+    }
+
+    .quiz-card h3 {
+        font-size: 24px;
+        margin: 0 0 15px 0;
+    }
+
+    .quiz-card p {
+        margin: 0 0 20px 0;
+        line-height: 1.5;
+    }
+
+    .quiz-card .error-text {
+        color: #ff6b6b;
+        margin-top: 10px;
+    }
+
+    .action-btn {
+        background: #4CAF50;
+        color: white;
+        padding: 12px 25px;
+        border-radius: 6px;
+        text-decoration: none;
+        font-weight: 600;
+        margin-top: auto;
+        border: none;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .action-btn:hover {
+        background: #45a049;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .feature-section {
+        display: flex;
+        align-items: center;
+        gap: 30px;
+        padding: 20px;
+        max-width: 1400px;
+        margin: 0 auto;
+        width: 100%;
+    }
+
+    .feature-section.reverse {
+        flex-direction: row-reverse;
+    }
+
+    .feature-section img {
+        width: 50%;
+        height: auto;
+        border-radius: 12px;
+        object-fit: cover;
+        transition: transform 0.3s ease;
+    }
+
+    .feature-section:hover img {
+        transform: scale(1.02);
+    }
+
+    .feature-content {
+        flex: 1;
+        text-align: center;
+        padding: 0 20px;
+    }
+
+    .feature-content h2 {
+        font-size: 32px;
+        color: #333;
+        margin-bottom: 20px;
+    }
+
+    .feature-content p {
+        font-size: 18px;
+        line-height: 1.6;
+        color: #666;
+    }
+
+    @media (max-width: 1400px) {
+        .white-section {
+            border-radius: 0;
+        }
+        
+        .cards-grid {
+            gap: 15px;
+        }
+    }
+
+    @media (max-width: 1200px) {
+        .cards-grid {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .home-container {
+            margin-top: 60px;
+            padding: 0 10px;
+        }
+
+        .white-section {
+            padding: 20px 15px;
+        }
+
+        .cards-grid {
+            grid-template-columns: 1fr;
+            gap: 15px;
+        }
+
+        .feature-section, 
+        .feature-section.reverse {
+            flex-direction: column;
+        }
+
+        .feature-section img {
+            width: 100%;
+        }
+
+        .quiz-card {
+            min-height: 350px;
+        }
+
+        .quiz-card img {
+            width: 180px;
+            height: 160px;
+        }
+    }
+</style>
+
+<div class="home-container">
+    <div class="white-section">
+        <h2 class="section-title">Create Your Quiz Experience</h2>
+        <div class="cards-grid">
+            <div class="quiz-card">
+                <img src="{% static 'images/quiztime_giphy.gif' %}" alt="Create Quiz">
+                <h3>Create Quiz</h3>
+                <p>Create A Quiz According to Your Need.</p>
+                {% if user.is_staff %}
+                    <a href="{% url 'staff_dashboard' %}" class="action-btn">Go to Staff Dashboard</a>
+                {% else %}
+                    <p class="error-text">Only Admins can create quizzes.</p>
+                {% endif %}
+            </div>
+
+            <div class="quiz-card">
+                <img src="{% static 'images/sliding_pandas_giphy.gif' %}" alt="Use Templates">
+                <h3>Use Templates</h3>
+                <p>Use templates for easy and quick Quiz Creation.</p>
+                <a href="#" class="action-btn">Choose Templates</a>
+            </div>
+
+            <div class="quiz-card">
+                <img src="{% static 'images/more_questions_giphy.gif' %}" alt="AI Tools">
+                <h3>AI Tools</h3>
+                <p>Use AI Tools for Quiz. Chat with Our Chatbot.</p>
+                <a href="#" class="action-btn">Use Now!</a>
+            </div>
+
+            <div class="quiz-card">
+                <img src="{% static 'images/penguin_giphy.gif' %}" alt="Join Challenges">
+                <h3>Join Challenges</h3>
+                <p>Join the Ongoing Quiz Challenges</p>
+                <a href="#" class="action-btn">Join Now</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- World Geography Quiz Section -->
+    <div class="white-section">
+        <div class="feature-section">
+            <img src="{% static 'images/use-cases-online-quiz-create-high-quality-quizzes-our-easy-to-use-quiz-maker.webp' %}" alt="World Map">
+            <div class="feature-content">
+                <h2>Navigate the Globe: World Geography Quiz</h2>
+                <p>Step into a realm of discovery where every question takes you closer to mastering the fascinating intricacies of our planet.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Journey Through Knowledge Section -->
+    <div class="white-section">
+        <div class="feature-section reverse">
+            <img src="{% static 'images/use-cases-online-quiz-make-quizzes-more-interactive-engaging.webp' %}" alt="Education Illustration">
+            <div class="feature-content">
+                <h2>Journey Through Knowledge</h2>
+                <p>Explore the vast landscape of facts, trivia, and timeless insights. From history to science and beyond, challenge your mind and uncover fascinating tidbits along the way.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scholarly Pursuits Section -->
+    <div class="white-section">
+        <div class="feature-section">
+            <img src="{% static 'images/educational_pic_for_cards.png' %}" alt="Education Illustration">
+            <div class="feature-content">
+                <h2>Scholarly Pursuits: A Comprehensive Journey</h2>
+                <p>Explore the evolution of learning and technology in education. Challenge yourself with questions that span history, theory, and practice.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Automatic Scoring System Section -->
+    <div class="white-section">
+        <div class="feature-section reverse">
+            <img src="{% static 'images/use-cases-online-quiz-save-time-with-automatic-scoring.webp' %}" alt="Automatic Scoring">
+            <div class="feature-content">
+                <h2>Automatic Scoring System</h2>
+                <p>Easily auto-score quizzes by marking answer choices as right or wrong, and assigning score-weighting values.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Animate cards
+    const cards = document.querySelectorAll('.quiz-card');
+    cards.forEach((card, index) => {
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(20px)';
+        setTimeout(() => {
+            card.style.transition = 'all 0.5s ease';
+            card.style.opacity = '1';
+            card.style.transform = 'translateY(0)';
+        }, index * 200);
+    });
+
+    // Animate feature sections
+    const features = document.querySelectorAll('.feature-section');
+    features.forEach((feature, index) => {
+        feature.style.opacity = '0';
+        feature.style.transform = 'translateY(30px)';
+        setTimeout(() => {
+            feature.style.transition = 'all 0.8s ease';
+            feature.style.opacity = '1';
+            feature.style.transform = 'translateY(0)';
+        }, (index + 4) * 200); // Start after cards animation
+    });
+});
+</script>
+{% endblock %}

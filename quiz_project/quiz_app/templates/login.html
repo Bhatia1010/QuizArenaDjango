@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Quiz Application</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #ffffff;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        .login-form {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            background: #ffffff;
+            padding: 2.5rem;
+            border-radius: 20px;
+            box-shadow: 
+                0 10px 25px rgba(0, 0, 0, 0.1);
+            max-width: 1200px;
+            width: 100%;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            min-height: 700px;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .login-form:hover {
+            box-shadow: 
+                0 15px 35px rgba(0, 0, 0, 0.15);
+            transform: translateY(-5px);
+        }
+
+        .login-gif {
+            width: 500px;
+            height: 700px;
+            object-fit: cover;
+            border-radius: 15px;
+            transition: all 0.3s ease;
+            filter: sepia(100%) hue-rotate(240deg) saturate(1.2) brightness(0.9);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .login-gif:hover {
+            transform: scale(1.02);
+            filter: sepia(100%) hue-rotate(240deg) saturate(1.5) brightness(1);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .form-container {
+            flex: 1;
+            padding: 0 1.5rem;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            overflow-y: visible;
+            max-height: none;
+            position: relative;
+        }
+
+        .form-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+            border-radius: 15px;
+            z-index: -1;
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .login-header h2 {
+            color: #2d3748;
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .login-header p {
+            color: #718096;
+            font-size: 1rem;
+            animation: fadeIn 0.5s ease-out 0.2s;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+            animation: fadeIn 0.5s ease-out 0.3s;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #4a5568;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .input-with-icon {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .input-with-icon i {
+            position: absolute;
+            left: 1rem;
+            color: #a0aec0;
+            transition: all 0.3s ease;
+        }
+
+        .input-with-icon input {
+            width: 100%;
+            padding: 0.75rem 1rem 0.75rem 2.5rem;
+            border: 2px solid rgba(102, 126, 234, 0.2);
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(5px);
+        }
+
+        .input-with-icon input:focus {
+            outline: none;
+            border-color: #667eea;
+            background: rgba(255, 255, 255, 1);
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
+        }
+
+        .input-with-icon input:focus + i {
+            color: #667eea;
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 1rem;
+            cursor: pointer;
+            color: #a0aec0;
+            transition: all 0.3s ease;
+        }
+
+        .toggle-password:hover {
+            color: #667eea;
+        }
+
+        .form-options {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            animation: fadeIn 0.5s ease-out 0.4s;
+        }
+
+        .remember-me {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .remember-me input[type="checkbox"] {
+            width: 1.2rem;
+            height: 1.2rem;
+            border-radius: 4px;
+            border: 2px solid #e2e8f0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .remember-me input[type="checkbox"]:checked {
+            background-color: #667eea;
+            border-color: #667eea;
+        }
+
+        .remember-me label {
+            color: #4a5568;
+            cursor: pointer;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .forgot-password {
+            color: #667eea;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .forgot-password:hover {
+            color: #553c9a;
+            text-decoration: underline;
+        }
+
+        .btn-login {
+            width: 100%;
+            padding: 0.75rem;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.5rem;
+            animation: fadeIn 0.5s ease-out 0.5s;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-login:hover {
+            background: #764ba2;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-login:active {
+            transform: translateY(0);
+        }
+
+        .social-login {
+            margin-top: 2rem;
+            text-align: center;
+            animation: fadeIn 0.5s ease-out 0.6s;
+        }
+
+        .social-login p {
+            color: #718096;
+            margin-bottom: 1rem;
+            position: relative;
+        }
+
+        .social-login p::before,
+        .social-login p::after {
+            content: "";
+            position: absolute;
+            top: 50%;
+            width: 30%;
+            height: 1px;
+            background: #e2e8f0;
+        }
+
+        .social-login p::before {
+            left: 0;
+        }
+
+        .social-login p::after {
+            right: 0;
+        }
+
+        .social-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+        }
+
+        .social-btn {
+            padding: 0.75rem 1.5rem;
+            border: 2px solid rgba(102, 126, 234, 0.2);
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(5px);
+            color: #4a5568;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .social-btn:hover {
+            background: rgba(255, 255, 255, 1);
+            border-color: rgba(102, 126, 234, 0.4);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.2);
+        }
+
+        .register-link {
+            text-align: center;
+            margin-top: 2rem;
+            color: #718096;
+            animation: fadeIn 0.5s ease-out 0.7s;
+        }
+
+        .register-link a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .register-link a:hover {
+            color: #553c9a;
+            text-decoration: underline;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 1024px) {
+            .login-form {
+                backdrop-filter: none;
+            }
+
+            .login-gif {
+                width: 100%;
+                height: 300px;
+                max-width: 450px;
+                margin-bottom: 1.5rem;
+            }
+
+            .form-container {
+                width: 100%;
+                padding: 0;
+                height: auto;
+            }
+        }
+
+        .security-options {
+            margin-bottom: 1.5rem;
+        }
+
+        .captcha-container {
+            margin-bottom: 1.5rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="login-form">
+            <img src="{% static 'images/giphy2.gif' %}" alt="Login Animation" class="login-gif">
+            <div class="form-container">
+                <div class="login-header">
+                    <h2>Welcome Back</h2>
+                    <p>Please login to your account</p>
+                </div>
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert alert-{{ message.tags }}">
+                            <div class="alert-text">
+                                <i class="fas fa-info-circle"></i>
+                                <span>{{ message }}</span>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+                <form method="POST" action="{% url 'login' %}" class="login-form-content">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="username">
+                            <div class="form-text">
+                                <i class="fas fa-user"></i>
+                                <span>Username</span>
+                            </div>
+                        </label>
+                        <div class="input-with-icon">
+                            <i class="fas fa-user"></i>
+                            <input type="text" id="username" name="username" required placeholder="Enter your username">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="password">
+                            <div class="form-text">
+                                <i class="fas fa-lock"></i>
+                                <span>Password</span>
+                            </div>
+                        </label>
+                        <div class="input-with-icon">
+                            <i class="fas fa-lock"></i>
+                            <input type="password" id="password" name="password" required placeholder="Enter your password">
+                            <i class="fas fa-eye toggle-password" onclick="togglePassword('password')"></i>
+                        </div>
+                    </div>
+                    <div class="form-options">
+                        <div class="remember-me">
+                            <input type="checkbox" id="remember" name="remember">
+                            <label for="remember">
+                                <i class="fas fa-check"></i>
+                                Remember me
+                            </label>
+                        </div>
+                        <a href="#" class="forgot-password">
+                            <i class="fas fa-key"></i>
+                            Forgot Password?
+                        </a>
+                    </div>
+                    <div class="security-options">
+                        <div class="captcha-container">
+                            <!-- Add your reCAPTCHA here -->
+                        </div>
+                    </div>
+                    <button type="submit" class="btn-login">
+                        <span class="button-text">
+                            <i class="fas fa-sign-in-alt"></i>
+                            Login
+                        </span>
+                        <span class="button-loader">
+                            <i class="fas fa-spinner fa-spin"></i>
+                        </span>
+                    </button>
+                </form>
+                <div class="social-login">
+                    <p>Or login with</p>
+                    <div class="social-buttons">
+                        <button type="button" class="social-btn">
+                            <i class="fab fa-google"></i>
+                            Google
+                        </button>
+                        <button type="button" class="social-btn">
+                            <i class="fab fa-facebook-f"></i>
+                            Facebook
+                        </button>
+                    </div>
+                </div>
+                <p class="register-link">
+                    <i class="fas fa-user-plus"></i>
+                    Don't have an account? <a href="{% url 'register' %}">Sign up here</a>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function togglePassword(inputId) {
+            const input = document.getElementById(inputId);
+            const icon = input.nextElementSibling;
+            
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                input.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        }
+
+        // Form submission animation
+        document.querySelector('.login-form-content').addEventListener('submit', function(e) {
+            const button = this.querySelector('.btn-login');
+            const buttonText = button.querySelector('.button-text');
+            const buttonLoader = button.querySelector('.button-loader');
+            
+            buttonText.style.display = 'none';
+            buttonLoader.style.display = 'flex';
+            button.disabled = true;
+        });
+    </script>
+</body>
+</html>

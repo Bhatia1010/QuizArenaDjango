@@ -1,0 +1,292 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block style %}
+<style>
+    .resource-container {
+        max-width: 900px;
+        margin: 100px auto 40px;
+        padding: 0 20px;
+    }
+
+    .resource-header {
+        margin-bottom: 30px;
+    }
+
+    .resource-type {
+        display: inline-block;
+        padding: 5px 12px;
+        background: #e9d8fd;
+        color: #553c9a;
+        border-radius: 15px;
+        font-size: 0.9rem;
+        margin-bottom: 10px;
+    }
+
+    .resource-header h1 {
+        font-size: 2.5rem;
+        color: #2d3748;
+        margin-bottom: 15px;
+    }
+
+    .resource-header p {
+        color: #4a5568;
+        font-size: 1.1rem;
+    }
+
+    .resource-content {
+        background: white;
+        padding: 40px;
+        border-radius: 15px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        margin-bottom: 30px;
+    }
+
+    .study-material {
+        margin-bottom: 30px;
+    }
+
+    .study-material h2 {
+        color: #2d3748;
+        font-size: 1.8rem;
+        margin-bottom: 20px;
+        padding-bottom: 10px;
+        border-bottom: 2px solid #e2e8f0;
+    }
+
+    .material-section {
+        margin-bottom: 25px;
+    }
+
+    .material-section h3 {
+        color: #4a5568;
+        font-size: 1.3rem;
+        margin-bottom: 15px;
+    }
+
+    .material-section p {
+        color: #4a5568;
+        line-height: 1.6;
+        margin-bottom: 15px;
+    }
+
+    .code-example {
+        background: #f8f9fa;
+        padding: 20px;
+        border-radius: 8px;
+        margin: 15px 0;
+        font-family: monospace;
+        overflow-x: auto;
+    }
+
+    .exercise {
+        background: #f0f9ff;
+        padding: 20px;
+        border-radius: 8px;
+        margin: 15px 0;
+        border-left: 4px solid #4299e1;
+    }
+
+    .exercise h4 {
+        color: #2b6cb0;
+        margin-bottom: 10px;
+    }
+
+    .button-container {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 20px;
+    }
+
+    .nav-button {
+        display: inline-block;
+        padding: 12px 24px;
+        background: #6b46c1;
+        color: white;
+        text-decoration: none;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+        font-weight: 500;
+    }
+
+    .nav-button:hover {
+        background: #553c9a;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .nav-button i {
+        margin-right: 8px;
+    }
+
+    .back-to-hub {
+        background: #48bb78;
+        display: block;
+        text-align: center;
+        margin-top: 30px;
+        font-size: 1.1rem;
+        padding: 15px 30px;
+    }
+
+    .back-to-hub:hover {
+        background: #38a169;
+    }
+
+    @media (max-width: 768px) {
+        .resource-container {
+            padding: 0 15px;
+        }
+
+        .resource-content {
+            padding: 20px;
+        }
+
+        .material-section h3 {
+            font-size: 1.2rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="resource-container">
+    <div class="button-container">
+        <a href="{% url 'learning_hub:topic_detail' topic.id %}" class="nav-button">
+            <i class="fas fa-arrow-left"></i> Back to Topic
+        </a>
+    </div>
+    
+    <div class="resource-header">
+        <span class="resource-type">{{ resource.get_resource_type_display }}</span>
+        <h1>{{ resource.title }}</h1>
+        <p>{{ resource.description }}</p>
+    </div>
+
+    <div class="resource-content">
+        {{ resource.content|safe|linebreaks }}
+
+        <div class="study-material">
+            <h2>Study Materials</h2>
+            
+            {% if 'Python' in topic.title %}
+            <div class="material-section">
+                <h3>Python Learning Resources</h3>
+                <p>Learn Python programming with these excellent resources:</p>
+                <ul>
+                    <li>W3Schools Python Tutorial: <a href="https://www.w3schools.com/python/" target="_blank">Python Tutorial</a></li>
+                    <li>Apna College Python Playlist: <a href="https://www.youtube.com/playlist?list=PLfqMhTWNBTe3LtFWcvwpqTkUSlB32kJop" target="_blank">Python Full Course</a></li>
+                </ul>
+            </div>
+
+            <div class="material-section">
+                <h3>Code Examples</h3>
+                <div class="code-example">
+                    # Python Hello World
+                    def greet(name):
+                        return f"Hello, {name}!"
+                    
+                    # List comprehension example
+                    numbers = [1, 2, 3, 4, 5]
+                    squares = [x**2 for x in numbers]
+                </div>
+            </div>
+
+            <div class="material-section">
+                <h3>Practice Exercises</h3>
+                <div class="exercise">
+                    <h4>Exercise 1: FizzBuzz</h4>
+                    <p>Write a program that prints numbers from 1 to 100. For multiples of 3, print "Fizz" instead of the number. For multiples of 5, print "Buzz". For numbers that are multiples of both 3 and 5, print "FizzBuzz".</p>
+                </div>
+            </div>
+
+            {% elif 'C++' in topic.title %}
+            <div class="material-section">
+                <h3>C++ Learning Resources</h3>
+                <p>Master C++ programming with these excellent resources:</p>
+                <ul>
+                    <li>W3Schools C++ Tutorial: <a href="https://www.w3schools.com/cpp/" target="_blank">C++ Tutorial</a></li>
+                    <li>Apna College C++ Playlist: <a href="https://www.youtube.com/playlist?list=PLfqMhTWNBTe0b2nM6JHVCnAkhQRGiZMSJ" target="_blank">C++ Full Course</a></li>
+                </ul>
+            </div>
+
+            <div class="material-section">
+                <h3>Code Examples</h3>
+                <div class="code-example">
+                    // C++ Hello World
+                    #include <iostream>
+                    
+                    int main() {
+                        std::cout << "Hello, World!" << std::endl;
+                        return 0;
+                    }
+                </div>
+            </div>
+
+            {% elif 'Web' in topic.title %}
+            <div class="material-section">
+                <h3>Web Development Resources</h3>
+                <p>Essential resources for web development:</p>
+                <ul>
+                    <li>W3Schools Web Development: <a href="https://www.w3schools.com/" target="_blank">Web Development Tutorials</a></li>
+                    <li>Apna College Web Development Playlist: <a href="https://www.youtube.com/playlist?list=PLfqMhTWNBTe3H6c9OGXb5_6wcc1Mca52n" target="_blank">Web Development Full Course</a></li>
+                </ul>
+            </div>
+
+            <div class="material-section">
+                <h3>HTML/CSS Examples</h3>
+                <div class="code-example">
+                    <!-- HTML Structure -->
+                    <!DOCTYPE html>
+                    <html>
+                    <head>
+                        <title>My Web Page</title>
+                        <style>
+                            .container {
+                                max-width: 1200px;
+                                margin: 0 auto;
+                            }
+                        </style>
+                    </head>
+                    <body>
+                        <div class="container">
+                            <h1>Hello World</h1>
+                        </div>
+                    </body>
+                    </html>
+                </div>
+            </div>
+
+            {% elif 'Django' in topic.title %}
+            <div class="material-section">
+                <h3>Django Resources</h3>
+                <p>Learn Django with these comprehensive resources:</p>
+                <ul>
+                    <li>W3Schools Django Tutorial: <a href="https://www.w3schools.com/django/" target="_blank">Django Tutorial</a></li>
+                    <li>Apna College Django Playlist: <a href="https://www.youtube.com/playlist?list=PLfqMhTWNBTe0L9JQJ0Qj8J6z8tJzXb9g9" target="_blank">Django Full Course</a></li>
+                </ul>
+            </div>
+
+            <div class="material-section">
+                <h3>Django Code Examples</h3>
+                <div class="code-example">
+                    # Django Model Example
+                    from django.db import models
+
+                    class Blog(models.Model):
+                        title = models.CharField(max_length=200)
+                        content = models.TextField()
+                        created_at = models.DateTimeField(auto_now_add=True)
+
+                        def __str__(self):
+                            return self.title
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <a href="{% url 'learning_hub:topic_list' %}" class="nav-button back-to-hub">
+        <i class="fas fa-book"></i> Back to Learning Hub
+    </a>
+</div>
+{% endblock %}

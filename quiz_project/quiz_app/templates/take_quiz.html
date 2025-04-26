@@ -1,0 +1,168 @@
+{% extends "quiz_base.html" %}
+{% load static %}
+
+{% block style %}
+<style>
+    :root {
+        --primary-color: #6b46c1;
+        --primary-dark: #553c9a;
+        --primary-light: #805ad5;
+        --secondary-color: #4299e1;
+        --success-color: #48bb78;
+        --warning-color: #ed8936;
+        --danger-color: #e53e3e;
+        --text-dark: #2d3748;
+        --text-light: #4a5568;
+        --background-light: #f8f9fa;
+        --white: #ffffff;
+        --shadow-sm: 0 4px 6px rgba(0, 0, 0, 0.1);
+        --shadow-md: 0 10px 15px rgba(0, 0, 0, 0.1);
+        --shadow-lg: 0 20px 25px rgba(0, 0, 0, 0.1);
+        --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .quiz-container {
+        max-width: 800px;
+        margin: 40px auto;
+        padding: 0 20px;
+    }
+
+    .quiz-header {
+        text-align: center;
+        margin-bottom: 40px;
+    }
+
+    .quiz-title {
+        font-size: 2.5rem;
+        color: var(--text-dark);
+        margin-bottom: 15px;
+        font-weight: 700;
+    }
+
+    .quiz-card {
+        background: var(--white);
+        border-radius: 15px;
+        box-shadow: var(--shadow-md);
+        padding: 30px;
+        margin-bottom: 40px;
+    }
+
+    .question-card {
+        background: var(--background-light);
+        border-radius: 10px;
+        padding: 20px;
+        margin-bottom: 20px;
+    }
+
+    .question-text {
+        font-size: 1.1rem;
+        color: var(--text-dark);
+        margin-bottom: 15px;
+        font-weight: 600;
+    }
+
+    .option {
+        display: block;
+        padding: 12px 15px;
+        margin-bottom: 10px;
+        border-radius: 8px;
+        background: var(--white);
+        border: 1px solid var(--background-light);
+        cursor: pointer;
+        transition: var(--transition);
+    }
+
+    .option:hover {
+        background: var(--primary-light);
+        color: var(--white);
+        transform: translateX(5px);
+    }
+
+    .option input[type="radio"] {
+        margin-right: 10px;
+    }
+
+    .attempts-info {
+        text-align: center;
+        margin-bottom: 20px;
+        padding: 10px;
+        background: var(--warning-color);
+        color: var(--white);
+        border-radius: 8px;
+    }
+
+    .submit-btn {
+        display: block;
+        width: 100%;
+        padding: 15px;
+        background: var(--primary-color);
+        color: var(--white);
+        border: none;
+        border-radius: 8px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: var(--transition);
+    }
+
+    .submit-btn:hover {
+        background: var(--primary-dark);
+        transform: translateY(-2px);
+    }
+
+    @media (max-width: 768px) {
+        .quiz-container {
+            padding: 0 15px;
+        }
+
+        .quiz-title {
+            font-size: 2rem;
+        }
+
+        .option {
+            padding: 10px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="quiz-container">
+    <div class="quiz-header">
+        <h1 class="quiz-title">{{ quiz.title }}</h1>
+        {% if attempts_remaining %}
+        <div class="attempts-info">
+            Attempts remaining: {{ attempts_remaining }}
+        </div>
+        {% endif %}
+    </div>
+
+    <form method="post" action="{% url 'submit_quiz' quiz.id %}" class="quiz-card">
+        {% csrf_token %}
+        {% for question in questions %}
+        <div class="question-card">
+            <h3 class="question-text">{{ question.question_text }}</h3>
+            <div class="options">
+                <label class="option">
+                    <input type="radio" name="q{{ question.id }}" value="A" required>
+                    A. {{ question.option_a }}
+                </label>
+                <label class="option">
+                    <input type="radio" name="q{{ question.id }}" value="B" required>
+                    B. {{ question.option_b }}
+                </label>
+                <label class="option">
+                    <input type="radio" name="q{{ question.id }}" value="C" required>
+                    C. {{ question.option_c }}
+                </label>
+                <label class="option">
+                    <input type="radio" name="q{{ question.id }}" value="D" required>
+                    D. {{ question.option_d }}
+                </label>
+            </div>
+        </div>
+        {% endfor %}
+        <button type="submit" class="submit-btn">Submit Quiz</button>
+    </form>
+</div>
+{% endblock %} 

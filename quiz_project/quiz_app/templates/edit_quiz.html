@@ -1,0 +1,228 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block style %}
+<style>
+    :root {
+        --primary-color: #6b46c1;
+        --primary-dark: #553c9a;
+        --primary-light: #805ad5;
+        --secondary-color: #4299e1;
+        --success-color: #48bb78;
+        --warning-color: #ed8936;
+        --danger-color: #e53e3e;
+        --text-dark: #2d3748;
+        --text-light: #4a5568;
+        --background-light: #f8f9fa;
+        --white: #ffffff;
+        --shadow-sm: 0 4px 6px rgba(0, 0, 0, 0.1);
+        --shadow-md: 0 10px 15px rgba(0, 0, 0, 0.1);
+        --shadow-lg: 0 20px 25px rgba(0, 0, 0, 0.1);
+        --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .quiz-container {
+        width: 1800px;
+        margin: 100px auto 40px;
+        padding: 0 20px;
+    }
+
+    .quiz-header {
+        text-align: center;
+        margin-bottom: 40px;
+    }
+
+    .quiz-title {
+        font-size: 2.5rem;
+        color: var(--text-dark);
+        margin-bottom: 15px;
+        font-weight: 700;
+    }
+
+    .quiz-form {
+        background: var(--white);
+        border-radius: 15px;
+        box-shadow: var(--shadow-md);
+        padding: 30px;
+        margin-bottom: 40px;
+    }
+
+    .form-group {
+        
+        margin-bottom: 25px;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 10px;
+        color: var(--text-dark);
+        font-weight: 600;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid var(--background-light);
+        border-radius: 8px;
+        font-size: 1rem;
+        transition: var(--transition);
+    }
+
+    .form-control:focus {
+        outline: none;
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 3px rgba(107, 70, 193, 0.1);
+    }
+
+    .question-section {
+        background: var(--background-light);
+        padding: 20px;
+        border-radius: 10px;
+        margin-bottom: 20px;
+    }
+
+    .question-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 15px;
+    }
+
+    .question-number {
+        font-size: 1.2rem;
+        color: var(--text-dark);
+        font-weight: 600;
+    }
+
+    .option-group {
+        margin-bottom: 15px;
+    }
+
+    .option-group label {
+        display: block;
+        margin-bottom: 5px;
+        color: var(--text-light);
+    }
+
+    .btn {
+        padding: 12px 25px;
+        border-radius: 8px;
+        font-weight: 600;
+        transition: var(--transition);
+        text-decoration: none;
+        display: inline-block;
+        cursor: pointer;
+        border: none;
+    }
+
+    .btn-primary {
+        background: var(--primary-color);
+        color: var(--white);
+    }
+
+    .btn-primary:hover {
+        background: var(--primary-dark);
+        transform: translateY(-2px);
+    }
+
+    .btn-secondary {
+        background: var(--text-light);
+        color: var(--white);
+    }
+
+    .btn-secondary:hover {
+        background: var(--text-dark);
+        transform: translateY(-2px);
+    }
+
+    .btn-group {
+        display: flex;
+        gap: 15px;
+        margin-top: 30px;
+    }
+
+    @media (max-width: 768px) {
+        .quiz-container {
+            padding: 0 15px;
+        }
+
+        .quiz-title {
+            font-size: 2rem;
+        }
+
+        .btn-group {
+            flex-direction: column;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="quiz-container">
+    <div class="quiz-header">
+        <h1 class="quiz-title">Edit Quiz</h1>
+    </div>
+
+    <form method="post" class="quiz-form">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="title">Quiz Title</label>
+            <input type="text" id="title" name="title" class="form-control" value="{{ quiz.title }}" required>
+        </div>
+
+        {% for question in questions %}
+        <div class="question-section">
+            <div class="question-header">
+                <div class="question-number">Question {{ forloop.counter }}</div>
+            </div>
+            
+            <div class="form-group">
+                <label for="question_{{ question.id }}">Question Text</label>
+                <input type="text" id="question_{{ question.id }}" name="question_{{ question.id }}" 
+                       class="form-control" value="{{ question.question_text }}" required>
+            </div>
+
+            <div class="option-group">
+                <label for="option_a_{{ question.id }}">Option A</label>
+                <input type="text" id="option_a_{{ question.id }}" name="option_a_{{ question.id }}" 
+                       class="form-control" value="{{ question.option_a }}" required>
+            </div>
+
+            <div class="option-group">
+                <label for="option_b_{{ question.id }}">Option B</label>
+                <input type="text" id="option_b_{{ question.id }}" name="option_b_{{ question.id }}" 
+                       class="form-control" value="{{ question.option_b }}" required>
+            </div>
+
+            <div class="option-group">
+                <label for="option_c_{{ question.id }}">Option C</label>
+                <input type="text" id="option_c_{{ question.id }}" name="option_c_{{ question.id }}" 
+                       class="form-control" value="{{ question.option_c }}" required>
+            </div>
+
+            <div class="option-group">
+                <label for="option_d_{{ question.id }}">Option D</label>
+                <input type="text" id="option_d_{{ question.id }}" name="option_d_{{ question.id }}" 
+                       class="form-control" value="{{ question.option_d }}" required>
+            </div>
+
+            <div class="form-group">
+                <label for="correct_answer_{{ question.id }}">Correct Answer</label>
+                <select id="correct_answer_{{ question.id }}" name="correct_answer_{{ question.id }}" 
+                        class="form-control" required>
+                    <option value="A" {% if question.correct_answer == 'A' %}selected{% endif %}>A</option>
+                    <option value="B" {% if question.correct_answer == 'B' %}selected{% endif %}>B</option>
+                    <option value="C" {% if question.correct_answer == 'C' %}selected{% endif %}>C</option>
+                    <option value="D" {% if question.correct_answer == 'D' %}selected{% endif %}>D</option>
+                </select>
+            </div>
+        </div>
+        {% endfor %}
+
+        <div class="btn-group">
+            <button type="submit" class="btn btn-primary">Save Changes</button>
+            <a href="{% url 'staff_dashboard' %}" class="btn btn-secondary">Cancel</a>
+        </div>
+    </form>
+</div>
+{% endblock %}
